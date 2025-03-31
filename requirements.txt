@@ -1,3 +1,14 @@
-pandas
 streamlit
-tqdm 
+pandas
+numpy
+matplotlib
+plotly
+tqdm
+textblob
+wordcloud
+fpdf
+folium
+streamlit-folium
+python-dotenv
+transformers
+torch
