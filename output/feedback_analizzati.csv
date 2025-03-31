@@ -1,0 +1,6 @@
+feedback,sentiment,topic,suggested_action
+"Il servizio clienti è stato eccellente, molto soddisfatto!",positivo,Assistenza Tecnica,Nessuna azione richiesta
+Il prodotto è arrivato danneggiato e nessuno risponde alle email.,negativo,Servizio Clienti,Revisione manuale necessaria
+"Qualità nella media, niente di speciale.",neutro,Assistenza Tecnica,Nessuna azione richiesta
+"Spedizione velocissima, prodotto perfetto.",positivo,Prezzo,Nessuna azione richiesta
+"Non funziona come dovrebbe, sono deluso.",negativo,Spedizione,Revisione manuale necessaria
