@@ -424,7 +424,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <!-- BENCHMARK -->
     <div class="benchmark-section" id="benchmarkSection">
       <h3>Benchmark anonimo</h3>
-      <p class="bench-sub">Il tuo score confrontato con la media dei partecipanti per dimensione.</p>
+      <p class="bench-sub" id="benchSub">Il tuo score confrontato con la media dei partecipanti per dimensione.</p>
       <div id="benchmarkContent"></div>
       <div class="bench-legend">
         <span><span class="ldot you"></span> Il tuo score</span>
@@ -464,7 +464,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <script>
 /* ===== QUESTIONS ===== */
-const questions = [
+let questions = [
   {
     dim:"strategy",
     text:"Se domani il vostro CEO dovesse presentare al board la strategia AI, cosa mostrerebbe?",
@@ -578,7 +578,139 @@ const questions = [
 ];
 
 /* ===== DIMENSIONS ===== */
-const dimensionWeights = {strategy:1.3,data:1.2,execution:1.1,talent:1.0,governance:0.9};
+const defaultWeights = {strategy:1.3,data:1.2,execution:1.1,talent:1.0,governance:0.9};
+let dimensionWeights = {...defaultWeights};
+
+/* ===== PRE-ASSESSMENT STATE ===== */
+let userSector='other', userRole='manager', userSize='medium', userBudget=null;
+
+const SIZE_MULTIPLIERS = {tiny:0.7,small:0.85,medium:1.0,large:1.15};
+const SIZE_LABELS = {tiny:'Startup / PMI',small:'Media impresa',medium:'Grande impresa',large:'Enterprise'};
+
+/* ===== SECTOR CALIBRATION ===== */
+const SECTOR_CALIBRATION = {
+  banking:{
+    label:"Banking & Finance",icon:"🏦",
+    reaction:"Banking — un settore dove l'AI sta riscrivendo le regole del gioco. Regulatory pressure da una parte, efficienza dall'altra.",
+    weights:{strategy:1.3,data:1.3,execution:1.0,talent:0.9,governance:1.4},
+    benchmarks:{strategy:38,data:32,talent:28,governance:35,execution:22},
+    questionOverrides:{
+      7:{dim:"governance",text:"Come gestite il rischio di bias nei modelli AI usati per il credito e l'antifrode?",
+        subtitle:"Nel banking, un modello biased non è solo un errore — è un rischio regolamentare da milioni di euro.",
+        opts:[{label:"A",text:"Non abbiamo considerato il tema dei bias nei nostri modelli",score:0},{label:"B",text:"Qualche test manuale prima del deploy, ma senza framework strutturato",score:1},{label:"C",text:"Framework di fairness testing con metriche di disparate impact, audit periodici",score:3},{label:"D",text:"Pipeline automatizzata di bias detection, model cards documentate, audit trail per il regolatore",score:5}]},
+      8:{dim:"execution",text:"Quanti dei vostri use case AI in ambito core banking (credito, antifrode, KYC) sono in produzione?",
+        subtitle:"Il core banking è dove l'AI genera valore vero — non nei chatbot interni.",
+        opts:[{label:"A",text:"Zero — l'AI è confinata a use case periferici o demo",score:0},{label:"B",text:"Uno in produzione, ma con scope ridotto e molto human-in-the-loop",score:1},{label:"C",text:"2-3 use case core: scoring, fraud detection o KYC automatizzato",score:3},{label:"D",text:"AI integrata nei processi core con A/B test continui, modelli challenger e rollback automatico",score:5}]}
+    },
+    sectorInsights:{high:"Nel banking, il vostro livello di maturità AI è un vantaggio competitivo raro. Le banche che automatizzano credito e antifrode con AI riducono i falsi positivi del 60%.",mid:"Nel banking italiano, la maggior parte degli istituti è bloccata tra compliance e innovazione. Il vostro livello è nella norma — ma 'nella norma' in un settore disrupted non basta.",low:"Il banking ha il gap più grande tra potenziale AI e adozione reale. Mentre le fintech deployano modelli in settimane, le banche tradizionali impiegano trimestri."},
+    sectorSteps:["Priorità settore: mappate tutti i modelli AI che toccano decisioni regolamentate e create un AI Risk Register prima dell'enforcement EU AI Act.","Quick win: AI applicata all'antifrode — miglior rapporto effort/impatto nel banking."]
+  },
+  pa:{
+    label:"PA & Governo",icon:"🏛️",
+    reaction:"Pubblica Amministrazione — il settore dove l'AI potrebbe avere il maggiore impatto sociale. E anche il più complesso da trasformare.",
+    weights:{strategy:1.1,data:1.2,execution:1.0,talent:1.1,governance:1.5},
+    benchmarks:{strategy:22,data:20,talent:18,governance:25,execution:15},
+    questionOverrides:{
+      7:{dim:"governance",text:"Come gestite la trasparenza algoritmica verso i cittadini quando usate AI per decisioni che li riguardano?",
+        subtitle:"Nella PA, l'AI opaca non è solo un rischio tecnico — è un problema democratico.",
+        opts:[{label:"A",text:"Non usiamo AI per decisioni che riguardano i cittadini",score:0},{label:"B",text:"Usiamo AI per supporto decisionale, ma senza informativa specifica",score:1},{label:"C",text:"Informativa di base sulla presenza di AI, con possibilità di revisione umana",score:3},{label:"D",text:"Trasparenza totale: registro pubblico degli algoritmi, spiegabilità, diritto di opposizione",score:5}]},
+      4:{dim:"talent",text:"Quanti dipendenti della vostra PA hanno ricevuto formazione strutturata sull'uso dell'AI?",
+        subtitle:"Nella PA, il digital divide interno è il primo ostacolo all'innovazione.",
+        opts:[{label:"A",text:"Nessuno — la formazione IT è già una sfida",score:0},{label:"B",text:"Qualche pioniere si è formato autonomamente, senza programma ufficiale",score:1},{label:"C",text:"Programma di formazione AI avviato per almeno il 20% del personale",score:3},{label:"D",text:"AI literacy diffusa, competenze certificate, community of practice interna attiva",score:5}]}
+    },
+    sectorInsights:{high:"Un ente PA con questo livello di maturità AI è un'eccezione assoluta in Italia. Potete diventare un caso di riferimento nazionale.",mid:"Per la PA italiana, siete sopra la media. La sfida: scalare in un contesto di vincoli normativi e procurement complesso. Il PNRR è un'opportunità temporanea — usatela.",low:"La PA italiana parte da un livello di maturità digitale già basso. Prima priorità: dati strutturati e interoperabili. Seconda: competenze. Terza: governance etica."},
+    sectorSteps:["Priorità: allineamento con le linee guida AgID sull'AI nella PA e il Piano Triennale per l'Informatica.","Quick win: AI per semplificazione documentale (riassunti automatici, classificazione pratiche) — impatto alto, rischio basso."]
+  },
+  manufacturing:{
+    label:"Manufacturing",icon:"🏭",
+    reaction:"Manufacturing — dove l'AI non è un hype ma un fattore di sopravvivenza competitiva. Predictive maintenance, quality control, supply chain.",
+    weights:{strategy:1.1,data:1.4,execution:1.3,talent:0.9,governance:0.8},
+    benchmarks:{strategy:30,data:35,talent:22,governance:18,execution:30},
+    questionOverrides:{
+      2:{dim:"data",text:"I dati dei vostri macchinari e della linea produttiva sono raccolti, centralizzati e pronti per l'AI?",
+        subtitle:"Nel manufacturing, i dati IoT sono il petrolio. Ma la maggior parte delle aziende li ha in silos OT disconnessi.",
+        opts:[{label:"A",text:"Dati in silos OT, formati proprietari, nessuna integrazione con l'IT",score:0},{label:"B",text:"Qualche sensore connesso, ma dati in Excel o database locali",score:1},{label:"C",text:"Piattaforma IoT centralizzata con data lake, integrazione OT-IT avviata",score:3},{label:"D",text:"Digital twin della produzione alimentato in real-time, dati storici e streaming pronti per il ML",score:5}]},
+      8:{dim:"execution",text:"Quanti use case AI in produzione (predictive maintenance, quality control, ottimizzazione) sono operativi?",
+        subtitle:"Nel manufacturing, l'AI in produzione significa meno fermi macchina, meno scarti, più margine.",
+        opts:[{label:"A",text:"Zero — la produzione funziona come 10 anni fa",score:0},{label:"B",text:"Un pilota su una linea, con risultati promettenti ma non scalati",score:1},{label:"C",text:"2-3 use case operativi: predictive maintenance o visual inspection su più linee",score:3},{label:"D",text:"AI integrata end-to-end: scheduling dinamico, quality real-time, manutenzione predittiva su tutto il parco",score:5}]}
+    },
+    sectorInsights:{high:"Nel manufacturing italiano, questo livello vi mette anni avanti. L'Industria 4.0 non è più uno slogan — è il vostro vantaggio operativo.",mid:"Il manufacturing italiano ha dati operativi ricchissimi. Focus: predictive maintenance e quality control — ROI dimostrabile in settimane.",low:"Ogni ora di fermo macchina imprevisto costa migliaia di euro. La predictive maintenance AI ha ROI dimostrato in 3-6 mesi. Iniziate da lì."},
+    sectorSteps:["Priorità: audit dell'infrastruttura OT/IoT — quanti dati generate e quanti ne raccogliete?","Quick win: predictive maintenance su UN macchinario critico. ROI misurabile in settimane."]
+  },
+  retail:{
+    label:"Retail & Consumer",icon:"🛒",
+    reaction:"Retail — un settore dove l'AI è già ovunque nella customer experience. La domanda è: la usate voi, o solo i vostri competitor?",
+    weights:{strategy:1.2,data:1.3,execution:1.2,talent:1.0,governance:0.8},
+    benchmarks:{strategy:35,data:33,talent:30,governance:20,execution:28},
+    questionOverrides:{
+      2:{dim:"data",text:"Avete una vista unificata del cliente che integra dati online, offline, CRM e comportamentali?",
+        subtitle:"Nel retail, chi conosce il cliente meglio vince. 'Conoscere' oggi significa dati unificati pronti per l'AI.",
+        opts:[{label:"A",text:"Dati frammentati: e-commerce, negozi fisici, CRM sono mondi separati",score:0},{label:"B",text:"Qualche integrazione, ma la single customer view è un progetto in corso (da anni)",score:1},{label:"C",text:"CDP con vista cliente unificata, segmentazione AI-driven avviata",score:3},{label:"D",text:"Real-time customer intelligence: personalizzazione omnichannel, next-best-action, dynamic pricing",score:5}]},
+      9:{dim:"execution",text:"Come misurate l'impatto dell'AI sulla customer experience e sulle vendite?",
+        subtitle:"Nel retail, l'AI che non si misura in revenue o retention è un costo.",
+        opts:[{label:"A",text:"Non misuriamo — l'AI è un'iniziativa 'innovation' senza KPI di business",score:0},{label:"B",text:"Feedback qualitativi e qualche report periodico",score:1},{label:"C",text:"A/B test sistematici: conversion rate, basket size, CLV con vs senza AI",score:3},{label:"D",text:"Revenue attribution AI-driven, incrementalità misurata, loop di ottimizzazione su tutti i touchpoint",score:5}]}
+    },
+    sectorInsights:{high:"Nel retail, il vostro livello AI è un moat competitivo. Personalizzazione, dynamic pricing, inventory optimization — avete le basi per il retail AI-native.",mid:"Il retail ha il ROI AI più immediato e misurabile. Ma solo se avete una vista unificata del cliente. Focus su quello.",low:"Mentre Amazon personalizza ogni interazione, la maggior parte dei retailer italiani segmenta per età e geografia. Il gap si allarga ogni giorno."},
+    sectorSteps:["Priorità: Customer Data Platform prima di qualsiasi iniziativa AI — senza dati cliente unificati, ogni modello sarà cieco.","Quick win: product recommendation AI su e-commerce. Setup in settimane, impatto su conversion rate immediato."]
+  },
+  tech:{
+    label:"Tech & SaaS",icon:"💻",
+    reaction:"Tech & SaaS — il settore che l'AI sta trasformando più rapidamente. Se non integrate AI nel prodotto, qualcuno lo farà al vostro posto.",
+    weights:{strategy:1.2,data:1.1,execution:1.4,talent:1.2,governance:0.7},
+    benchmarks:{strategy:45,data:42,talent:48,governance:28,execution:40},
+    questionOverrides:{
+      8:{dim:"execution",text:"Quanto è integrata l'AI nel vostro prodotto/servizio core — non nei processi interni, nel prodotto?",
+        subtitle:"Nel tech, l'AI nei processi interni è igiene. L'AI nel prodotto è strategia.",
+        opts:[{label:"A",text:"L'AI non è nel nostro prodotto — la usiamo solo internamente (o non la usiamo)",score:0},{label:"B",text:"Qualche feature AI sperimentale, ma non è il differenziante",score:1},{label:"C",text:"Feature AI in produzione che i clienti usano, con metriche di adoption",score:3},{label:"D",text:"AI-native: il prodotto è costruito attorno all'AI, senza AI non avrebbe senso",score:5}]},
+      5:{dim:"talent",text:"Quanti dei vostri sviluppatori usano AI coding assistants (Copilot, Cursor) quotidianamente?",
+        subtitle:"Nel tech, non usare AI per sviluppare è come non usare Git. Tra un anno sarà impensabile.",
+        opts:[{label:"A",text:"Pochi o nessuno — non è incoraggiato né supportato",score:0},{label:"B",text:"Alcuni early adopter, ma non c'è policy né licenze aziendali",score:1},{label:"C",text:"Il 50%+ li usa con licenze aziendali e best practice condivise",score:3},{label:"D",text:"AI coding è lo standard: Copilot per tutti, AI code review, AI testing, agent-based development",score:5}]}
+    },
+    sectorInsights:{high:"Nel tech, siete dove dovete essere. Prossima frontiera: AI agents autonomi, model-as-a-moat, architetture composable.",mid:"Nel tech, 'nella media' è pericoloso. I competitor AI-native si muovono a velocità 10x. Priorità: AI nel prodotto core.",low:"Un'azienda tech senza AI nel prodotto e nel processo. In un mercato dove le startup AI-native nascono ogni giorno, questo è un rischio esistenziale."},
+    sectorSteps:["Priorità: competitive intelligence sprint — quanti competitor hanno già feature AI nel prodotto?","Quick win: licenze AI coding assistant per tutto il team. ROI immediato sulla produttività."]
+  },
+  healthcare:{
+    label:"Healthcare",icon:"🏥",
+    reaction:"Healthcare — il settore dove l'AI può letteralmente salvare vite. Ma anche dove gli errori hanno conseguenze irreversibili.",
+    weights:{strategy:1.1,data:1.3,execution:1.0,talent:1.0,governance:1.5},
+    benchmarks:{strategy:28,data:25,talent:25,governance:30,execution:18},
+    questionOverrides:{
+      7:{dim:"governance",text:"Come gestite la validazione clinica e la compliance (MDR, GDPR sanitario) per i sistemi AI?",
+        subtitle:"Nell'healthcare, un modello AI non validato non è un esperimento — è un rischio per i pazienti.",
+        opts:[{label:"A",text:"Non abbiamo considerato gli aspetti regolamentari specifici dell'AI sanitaria",score:0},{label:"B",text:"Consapevoli dei requisiti, ma senza processo strutturato di validazione",score:1},{label:"C",text:"Processo di validazione definito con clinici, legali e DPO",score:3},{label:"D",text:"Framework clinical AI governance completo: validazione clinica, audit trail, monitoraggio post-deployment, compliance MDR",score:5}]},
+      3:{dim:"data",text:"Come gestite i dati sanitari per l'addestramento e l'uso di modelli AI?",
+        subtitle:"I dati sanitari sono tra i più preziosi e i più protetti. Se non li gestite bene, l'AI non parte nemmeno.",
+        opts:[{label:"A",text:"Non abbiamo un processo specifico per i dati sanitari usati con l'AI",score:0},{label:"B",text:"Anonimizzazione di base, ma senza framework strutturato",score:1},{label:"C",text:"Data governance sanitaria: pseudonimizzazione, consenso specifico, DPIA completata",score:3},{label:"D",text:"Federated learning o synthetic data per addestrare modelli senza esporre dati reali, privacy-by-design end-to-end",score:5}]}
+    },
+    sectorInsights:{high:"Nell'healthcare italiano, questo livello è eccezionale. Potete definire best practice per l'intero settore sanitario nazionale.",mid:"L'healthcare ha potenziale enorme per l'AI — diagnostica, triage, drug discovery — ma i vincoli richiedono governance prima di scalare.",low:"L'healthcare italiano è nelle fasi iniziali. I dati clinici italiani sono ricchissimi, ma in silos e formati incompatibili. Iniziate dalla data governance."},
+    sectorSteps:["Priorità: DPIA specifica per i vostri use case AI sanitari — prerequisito legale e acceleratore di fiducia.","Quick win: AI per triage documentale (classificazione referti, riassunti clinici) — alto impatto, basso rischio clinico."]
+  },
+  consulting:{
+    label:"Consulting & Services",icon:"📊",
+    reaction:"Consulting — il settore dove l'AI sta ridefinendo il modello di business. Se vendete ore/uomo, l'AI è una minaccia. Se vendete outcome, è un moltiplicatore.",
+    weights:{strategy:1.3,data:1.0,execution:1.1,talent:1.4,governance:0.8},
+    benchmarks:{strategy:40,data:30,talent:42,governance:25,execution:32},
+    questionOverrides:{
+      4:{dim:"talent",text:"Quanti dei vostri consulenti usano AI quotidianamente nel lavoro con i clienti — non solo internamente?",
+        subtitle:"Nel consulting, l'AI che resta negli uffici e non arriva al cliente è un'occasione persa.",
+        opts:[{label:"A",text:"Pochissimi — la maggior parte lavora come 5 anni fa",score:0},{label:"B",text:"Alcuni usano ChatGPT per draft e ricerca, ma non è sistemico",score:1},{label:"C",text:"AI integrata nei deliverable: analisi automatizzate, insight generation, draft con review umana",score:3},{label:"D",text:"AI-augmented delivery: ogni progetto include componenti AI, i junior producono come senior",score:5}]},
+      9:{dim:"execution",text:"Il vostro modello di pricing riflette l'efficienza portata dall'AI, o vendete ancora ore/uomo?",
+        subtitle:"La domanda scomoda: se l'AI dimezza il tempo, dimezzate il prezzo o raddoppiate il margine?",
+        opts:[{label:"A",text:"Vendiamo ore/uomo — l'AI non ha cambiato il pricing",score:0},{label:"B",text:"L'AI ci rende efficienti ma il pricing resta time-based — il margine sale, il modello no",score:1},{label:"C",text:"Stiamo sperimentando pricing value-based su progetti AI-augmented",score:3},{label:"D",text:"Modello outcome-based: il cliente paga per il risultato, l'AI è il moltiplicatore di margine",score:5}]}
+    },
+    sectorInsights:{high:"Nel consulting, il vostro livello vi permette il salto più importante: da vendere tempo a vendere outcome. L'AI è il moltiplicatore di margine.",mid:"Il consulting italiano sperimenta con l'AI ma non ha cambiato il modello di business. Chi si muove ora definirà il nuovo standard.",low:"Il modello consulting tradizionale (ore × senior) è il più minacciato dall'AI. Un junior con AI produce come un senior senza. Cambiate modello."},
+    sectorSteps:["Priorità: identificate i 3 deliverable più ricorrenti e costruite un AI-augmented workflow per ciascuno.","Quick win: 'AI toolkit' per i consulenti con prompt library, template AI-assisted e best practice."]
+  },
+  other:{
+    label:"Altro settore",icon:"🔹",
+    reaction:"Ogni settore ha la sua specificità con l'AI. Calibriamo l'assessment su benchmark cross-industry.",
+    weights:{strategy:1.3,data:1.2,execution:1.1,talent:1.0,governance:0.9},
+    benchmarks:{strategy:32,data:28,talent:30,governance:22,execution:25},
+    questionOverrides:{},
+    sectorInsights:{high:"Il vostro livello di maturità AI è significativamente sopra la media cross-industry. Avete le basi per diventare riferimento nel settore.",mid:"Siete nella media cross-industry. Avete le basi. La sfida: passare dalla sperimentazione alla scala.",low:"Sotto la media cross-industry. Ma il gap è un'opportunità: partendo ora con un piano strutturato potete accelerare più dei competitor."},
+    sectorSteps:["Priorità: identificate il vostro 'killer use case' — il caso d'uso AI con il miglior rapporto impatto/complessità nel vostro specifico settore.","Quick win: iniziate con l'automazione dei processi interni più ripetitivi — il primo ROI AI arriva sempre da lì."]
+  }
+};
 
 const dimensions = {
   strategy:{name:"Strategy & Leadership",insights:{
@@ -682,6 +814,7 @@ const progressMsgs = {
 };
 
 /* ===== STATE ===== */
+const originalQuestions = JSON.parse(JSON.stringify(questions));
 let current = 0, answers = [], comboCount = 0, quizStartTime = 0;
 
 /* ===== SOCIAL PROOF ===== */
@@ -772,7 +905,6 @@ function startQuiz(){
 }
 
 async function startChatFlow(){
-  // Intro messages
   showTyping();
   await new Promise(r=>setTimeout(r,800));
   hideTyping();
@@ -781,11 +913,156 @@ async function startChatFlow(){
   showTyping();
   await new Promise(r=>setTimeout(r,600));
   hideTyping();
-  await addMsg('bot','Rispondi onestamente — non c\'è una risposta giusta. Solo quella vera. 🎯');
+  await addMsg('bot','Ma prima — come in ogni buon engagement — ho bisogno di capire il tuo contesto.');
+
+  await new Promise(r=>setTimeout(r,400));
+  await runPreAssessment();
+}
+
+/* ===== PRE-ASSESSMENT ===== */
+async function runPreAssessment(){
+  // Q1: Sector
+  showTyping();
+  await new Promise(r=>setTimeout(r,500));
+  hideTyping();
+  await addMsg('bot','In quale settore opera la tua organizzazione?');
+
+  const sectorMap = {banking:'banking',pa:'pa',manufacturing:'manufacturing',retail:'retail',tech:'tech',healthcare:'healthcare',consulting:'consulting',other:'other'};
+  const sectorChips = [
+    {key:'banking',label:'🏦 Banking & Finance'},
+    {key:'pa',label:'🏛️ PA & Governo'},
+    {key:'manufacturing',label:'🏭 Manufacturing'},
+    {key:'retail',label:'🛒 Retail & Consumer'},
+    {key:'tech',label:'💻 Tech & SaaS'},
+    {key:'healthcare',label:'🏥 Healthcare'},
+    {key:'consulting',label:'📊 Consulting & Services'},
+    {key:'other',label:'🔹 Altro settore'}
+  ];
+  userSector = await showPreChips(sectorChips);
+
+  const cal = SECTOR_CALIBRATION[userSector];
+  await addMsg('user', cal.label);
+
+  // Bot reaction
+  showTyping();
+  await new Promise(r=>setTimeout(r,500));
+  hideTyping();
+  await addMsg('bot', cal.reaction);
+
+  // Q2: Role
+  await new Promise(r=>setTimeout(r,300));
+  showTyping();
+  await new Promise(r=>setTimeout(r,400));
+  hideTyping();
+  await addMsg('bot','Qual è il tuo ruolo in azienda?');
+
+  const roleChips = [
+    {key:'clevel',label:'👔 C-level / Founder'},
+    {key:'director',label:'📋 Director / VP'},
+    {key:'manager',label:'🎯 Manager / Team Lead'},
+    {key:'ic',label:'💻 Specialist / IC'}
+  ];
+  userRole = await showPreChips(roleChips);
+  const roleLabels = {clevel:'C-level',director:'Director',manager:'Manager',ic:'Specialist'};
+  await addMsg('user', roleLabels[userRole]);
+
+  // Q3: Size
+  showTyping();
+  await new Promise(r=>setTimeout(r,400));
+  hideTyping();
+  await addMsg('bot','Quanti dipendenti ha la tua organizzazione?');
+
+  const sizeChips = [
+    {key:'tiny',label:'🚀 < 50 dipendenti'},
+    {key:'small',label:'🏢 50 - 250'},
+    {key:'medium',label:'🏙️ 250 - 1.000'},
+    {key:'large',label:'🌍 1.000+'}
+  ];
+  userSize = await showPreChips(sizeChips);
+  await addMsg('user', SIZE_LABELS[userSize]);
+
+  // Q4: Budget (conditional — only for C-level/Director)
+  if(userRole==='clevel'||userRole==='director'){
+    showTyping();
+    await new Promise(r=>setTimeout(r,400));
+    hideTyping();
+    await addMsg('bot','Dato il tuo ruolo, una domanda in più — il budget racconta verità che le slide nascondono.');
+    await new Promise(r=>setTimeout(r,300));
+    showTyping();
+    await new Promise(r=>setTimeout(r,400));
+    hideTyping();
+    await addMsg('bot','La vostra azienda ha un budget dedicato per iniziative AI?');
+
+    const budgetChips = [
+      {key:'none',label:'❌ No, nessun budget dedicato'},
+      {key:'shared',label:'💰 Sì, incorporato in altri budget'},
+      {key:'dedicated',label:'💎 Budget AI separato e protetto'},
+      {key:'full',label:'🚀 Budget + team + governance'}
+    ];
+    userBudget = await showPreChips(budgetChips);
+    const budgetLabels = {none:'Nessun budget',shared:'Budget condiviso',dedicated:'Budget dedicato',full:'Budget + team + governance'};
+    await addMsg('user', budgetLabels[userBudget]);
+  }
+
+  // Apply calibration
+  applySectorCalibration();
+
+  // Transition
+  showTyping();
+  await new Promise(r=>setTimeout(r,600));
+  hideTyping();
+  await addMsg('bot','Perfetto, ho il quadro. Ora iniziamo la vera diagnostica — 10 domande, risposte oneste. 🎯');
+
+  await new Promise(r=>setTimeout(r,300));
+  const sizeLabel = SIZE_LABELS[userSize];
+  await addMsg('system',`Assessment calibrato su: ${cal.icon} ${cal.label} · ${sizeLabel}`);
 
   await new Promise(r=>setTimeout(r,400));
   await addMsg('system',`Domanda 1 di ${questions.length}`);
   await askQuestion();
+}
+
+function showPreChips(options){
+  return new Promise(resolve=>{
+    const div=document.createElement('div');
+    div.className='chips';
+    div.id='preChips';
+    options.forEach(o=>{
+      const chip=document.createElement('button');
+      chip.className='chip';
+      chip.textContent=o.label;
+      chip.onclick=()=>{
+        chip.classList.add('selected');
+        if(navigator.vibrate) navigator.vibrate(10);
+        const rect=chip.getBoundingClientRect();
+        spawnParticles(rect.right-20,rect.top+rect.height/2);
+        setTimeout(()=>{div.remove();resolve(o.key)},350);
+      };
+      div.appendChild(chip);
+    });
+    chatBody().appendChild(div);
+    scrollChat();
+  });
+}
+
+function applySectorCalibration(){
+  const cal=SECTOR_CALIBRATION[userSector];
+  // Apply sector weights
+  dimensionWeights={...cal.weights};
+  // Apply question overrides
+  for(const [idx,override] of Object.entries(cal.questionOverrides)){
+    questions[parseInt(idx)]=override;
+  }
+}
+
+function getCalibratedBenchmarks(){
+  const cal=SECTOR_CALIBRATION[userSector];
+  const mult=SIZE_MULTIPLIERS[userSize];
+  const result={};
+  for(const [k,v] of Object.entries(cal.benchmarks)){
+    result[k]=Math.round(Math.max(10,Math.min(65,v*mult)));
+  }
+  return result;
 }
 
 async function askQuestion(){
@@ -1046,6 +1323,19 @@ function showResults(){
     }
   });
 
+  // Sector insight card
+  const cal=SECTOR_CALIBRATION[userSector];
+  const siCat=pct>=67?'high':pct>=33?'mid':'low';
+  ss.innerHTML+=`<div class="special-card" style="border-left-color:var(--accent2)"><div class="special-title">${cal.icon} Insight ${cal.label}</div><div class="special-msg">${cal.sectorInsights[siCat]}</div></div>`;
+
+  // Sector-specific steps appended
+  if(cal.sectorSteps && cal.sectorSteps.length){
+    const sc2=document.getElementById('stepsContent');
+    cal.sectorSteps.forEach((s,i)=>{
+      sc2.innerHTML+=`<div class="step-item"><div class="step-num" style="color:var(--accent2)">${['S1','S2'][i]}</div><div class="step-text">${s}</div></div>`;
+    });
+  }
+
   // Confetti for high scores
   if(pct>75) celebrateHighScore();
 
@@ -1147,12 +1437,14 @@ function celebrateHighScore(){
 /* ===== SHARE TEXTS ===== */
 function buildShareTexts(pct,level,ds){
   const baseUrl='https://lucadeang.github.io/dashboard-feedback-pa/';
+  const cal=SECTOR_CALIBRATION[userSector];
   const dims=Object.entries(dimensions).map(([k,d])=>`→ ${d.name}: ${ds[k]}%`).join('\n');
+  const sectorTag=cal.label!=='Altro settore'?`\nSettore: ${cal.label}`:'';
 
   // LinkedIn text varies by level
   let linkedInText;
   if(pct<=25){
-    linkedInText=`Ho appena fatto l'AI Readiness Assessment.\n\nScore: ${pct}/100 — ${level.label}.\n\nOuch.\n\nMa almeno ora so DOVE siamo. E sapere è il primo passo per non buttare soldi nel prossimo "progetto AI innovativo" che muore dopo il POC.\n\n${dims}\n\n2 minuti. 10 domande. Zero filtri.\nTu che score hai?\n\n${baseUrl}\n\n#AIReadiness #GenAI #AITransformation`;
+    linkedInText=`Ho appena fatto l'AI Readiness Assessment.${sectorTag}\n\nScore: ${pct}/100 — ${level.label}.\n\nOuch.\n\nMa almeno ora so DOVE siamo. E sapere è il primo passo per non buttare soldi nel prossimo "progetto AI innovativo" che muore dopo il POC.\n\n${dims}\n\n2 minuti. 10 domande. Zero filtri.\nTu che score hai?\n\n${baseUrl}\n\n#AIReadiness #GenAI #AITransformation`;
   } else if(pct<=50){
     linkedInText=`Ho appena scoperto il mio AI Readiness Score.\n\n${pct}/100 — ${level.label}.\n\nCi sei quasi. Ma "quasi" in AI vuol dire "non ancora".\n\n${dims}\n\nLa parte che mi ha fatto riflettere di più?\nLa domanda sulla governance.\n\nFai il test in 2 minuti:\n${baseUrl}\n\nPoi dimmi: che livello sei?\n\n#AIReadiness #GenAI #AITransformation #Leadership`;
   } else if(pct<=75){
@@ -1197,9 +1489,13 @@ function copyResult(){
 
 function restart(){
   current=0;answers=[];comboCount=0;
+  dimensionWeights={...defaultWeights};
+  questions=JSON.parse(JSON.stringify(originalQuestions));
+  userSector='other';userRole='manager';userSize='medium';userBudget=null;
   document.getElementById('results').style.display='none';
   document.getElementById('results').className='results';
   document.getElementById('scoreCircle').style.strokeDashoffset='327';
+  document.getElementById('chatBody').innerHTML='<div class="chat-scroll-anchor" id="chatAnchor"></div>';
   document.getElementById('hero').style.display='flex';
 }
 
@@ -1233,24 +1529,23 @@ function drawMatrix(dimScores){
 
 /* ===== BENCHMARK ===== */
 function drawBenchmark(dimScores,totalPct){
-  // Simulated anonymous averages (realistic bell curve data)
+  const calBench=getCalibratedBenchmarks();
+  const cal=SECTOR_CALIBRATION[userSector];
   const avgData={
-    strategy:{avg:32,label:'Strategy & Leadership'},
-    data:{avg:28,label:'Data & Infrastructure'},
-    talent:{avg:35,label:'Talent & Culture'},
-    governance:{avg:22,label:'Governance & Risk'},
-    execution:{avg:25,label:'Execution & Scale'}
+    strategy:{avg:calBench.strategy,label:'Strategy & Leadership'},
+    data:{avg:calBench.data,label:'Data & Infrastructure'},
+    talent:{avg:calBench.talent,label:'Talent & Culture'},
+    governance:{avg:calBench.governance,label:'Governance & Risk'},
+    execution:{avg:calBench.execution,label:'Execution & Scale'}
   };
-  // Adjust averages slightly based on localStorage count for variety
-  const seed=parseInt(localStorage.getItem('airQuizCount')||'2847');
-  Object.keys(avgData).forEach(k=>{
-    avgData[k].avg=Math.max(15,Math.min(55,avgData[k].avg+((seed*7+k.length*13)%11)-5));
-  });
+
+  // Update subtitle with sector info
+  const benchLabel=`${cal.icon} ${cal.label} · ${SIZE_LABELS[userSize]}`;
+  document.getElementById('benchSub').textContent=`Il tuo score vs media ${benchLabel}`;
 
   const cont=document.getElementById('benchmarkContent');
   let html='';
 
-  // Overall
   const overallAvg=Math.round(Object.values(avgData).reduce((s,d)=>s+d.avg,0)/5);
   html+=`<div class="bench-row">
     <div class="bench-label" style="font-weight:700">Overall</div>
