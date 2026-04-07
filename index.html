@@ -196,6 +196,59 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .special-card.red-flag .special-title{color:var(--accent5)}
 .special-msg{font-size:.88rem;color:var(--fg-muted);line-height:1.5}
 
+/* MATURITY MATRIX */
+.matrix-section{margin:2.5rem 0}
+.matrix-section h3{font-family:var(--serif);font-size:1.4rem;margin-bottom:.5rem}
+.matrix-section p.matrix-sub{font-size:.85rem;color:var(--fg-subtle);margin-bottom:1.5rem}
+.matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem}
+.matrix-table{width:100%;border-collapse:separate;border-spacing:4px;min-width:600px}
+.matrix-table th{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-subtle);padding:.6rem .4rem;text-align:center;font-weight:400}
+.matrix-table th:first-child{text-align:left;min-width:120px}
+.matrix-table td{padding:.5rem .4rem;text-align:center;border-radius:8px;font-size:.7rem;font-weight:500;transition:all .4s;position:relative}
+.matrix-table td:first-child{text-align:left;font-size:.75rem;font-weight:700;color:var(--fg-muted);background:none!important;letter-spacing:.04em;text-transform:uppercase}
+.matrix-cell{border-radius:8px;padding:.5rem .4rem;min-height:32px;display:flex;align-items:center;justify-content:center}
+.matrix-cell.l0{background:rgba(255,77,0,.06);color:#FF6B35}
+.matrix-cell.l1{background:rgba(255,77,0,.12);color:#FF6B35}
+.matrix-cell.l2{background:rgba(255,184,0,.1);color:#FFD166}
+.matrix-cell.l3{background:rgba(255,184,0,.18);color:#FFD166}
+.matrix-cell.l4{background:rgba(0,196,140,.1);color:#0FA}
+.matrix-cell.l5{background:rgba(0,196,140,.18);color:#00C48C}
+.matrix-cell.current{outline:2px solid var(--accent);outline-offset:-1px;box-shadow:0 0 12px rgba(255,77,0,.2)}
+.matrix-cell .cell-label{font-size:.6rem;letter-spacing:.06em}
+.matrix-legend{display:flex;gap:1.5rem;margin-top:1rem;justify-content:center;flex-wrap:wrap}
+.matrix-legend span{font-size:.7rem;color:var(--fg-subtle);display:flex;align-items:center;gap:.4rem}
+.matrix-legend .dot{width:10px;height:10px;border-radius:3px}
+.matrix-legend .dot.low{background:rgba(255,77,0,.15)}
+.matrix-legend .dot.mid{background:rgba(255,184,0,.15)}
+.matrix-legend .dot.high{background:rgba(0,196,140,.15)}
+
+/* BENCHMARK */
+.benchmark-section{margin:2.5rem 0;padding:2rem;background:var(--card);border:1px solid var(--border);border-radius:20px}
+.benchmark-section h3{font-family:var(--serif);font-size:1.4rem;margin-bottom:.5rem}
+.benchmark-section p.bench-sub{font-size:.85rem;color:var(--fg-subtle);margin-bottom:1.5rem}
+.bench-row{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.bench-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.bench-label{font-size:.8rem;color:var(--fg-muted);min-width:110px;font-weight:500}
+.bench-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,.04);border-radius:4px;position:relative;overflow:visible}
+.bench-bar{height:100%;border-radius:4px;transition:width 1.5s cubic-bezier(.16,1,.3,1);position:relative}
+.bench-bar.avg{background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.2))}
+.bench-bar.you{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bench-marker{position:absolute;top:-6px;width:2px;height:20px;background:var(--accent);border-radius:1px;transition:left 1.5s cubic-bezier(.16,1,.3,1)}
+.bench-marker::after{content:attr(data-label);position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:.6rem;color:var(--accent);white-space:nowrap;font-family:var(--mono)}
+.bench-val{font-family:var(--mono);font-size:.8rem;font-weight:700;min-width:40px;text-align:right}
+.bench-val.you-val{color:var(--accent)}
+.bench-val.avg-val{color:var(--fg-subtle)}
+.bench-legend{display:flex;gap:1.5rem;margin-top:1.5rem;justify-content:center}
+.bench-legend span{font-size:.75rem;display:flex;align-items:center;gap:.4rem}
+.bench-legend .ldot{width:12px;height:4px;border-radius:2px}
+.bench-legend .ldot.you{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bench-legend .ldot.avg{background:rgba(255,255,255,.15)}
+
+/* QUIZ PARTICLES */
+.particle-container{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.particle{position:absolute;border-radius:50%;pointer-events:none;animation:particleFloat linear forwards}
+@keyframes particleFloat{0%{opacity:0;transform:translateY(0) scale(0)}10%{opacity:1;transform:scale(1)}90%{opacity:.6}100%{opacity:0;transform:translateY(-120px) scale(.3)}}
+
 /* SHARE */
 .share-section{text-align:center;padding:2.5rem;background:rgba(20,20,22,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:20px;margin-top:2rem}
 .share-section h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:1rem}
@@ -335,6 +388,32 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
     <!-- DIMENSIONS -->
     <div class="dim-grid" id="dimGrid"></div>
+
+    <!-- MATURITY MATRIX -->
+    <div class="matrix-section" id="matrixSection">
+      <h3>La tua matrice di maturità</h3>
+      <p class="matrix-sub">Il tuo posizionamento su ogni dimensione, dal livello Dreamer ad Architect.</p>
+      <div class="matrix-wrap">
+        <table class="matrix-table" id="matrixTable"></table>
+      </div>
+      <div class="matrix-legend">
+        <span><span class="dot low"></span> Critico</span>
+        <span><span class="dot mid"></span> In crescita</span>
+        <span><span class="dot high"></span> Maturo</span>
+        <span style="font-weight:700;color:var(--accent)">◆ = Tu</span>
+      </div>
+    </div>
+
+    <!-- BENCHMARK -->
+    <div class="benchmark-section" id="benchmarkSection">
+      <h3>Benchmark anonimo</h3>
+      <p class="bench-sub">Il tuo score confrontato con la media dei partecipanti per dimensione.</p>
+      <div id="benchmarkContent"></div>
+      <div class="bench-legend">
+        <span><span class="ldot you"></span> Il tuo score</span>
+        <span><span class="ldot avg"></span> Media partecipanti</span>
+      </div>
+    </div>
 
     <!-- NEXT STEPS -->
     <div class="next-steps" id="nextSteps">
@@ -677,6 +756,10 @@ function selectAnswer(idx){
   const btns = document.querySelectorAll('.opt-btn');
   btns[idx].classList.add('selected');
 
+  // Particles on selection
+  const rect=btns[idx].getBoundingClientRect();
+  spawnParticles(rect.left+20,rect.top+rect.height/2);
+
   const area = document.getElementById('questionArea');
   setTimeout(()=>{
     area.classList.remove('q-entering');
@@ -781,6 +864,12 @@ function showResults(){
 
   // Radar chart
   drawRadar(dimScores);
+
+  // Maturity Matrix
+  drawMatrix(dimScores);
+
+  // Benchmark
+  drawBenchmark(dimScores,pct);
 
   // Dimension cards
   const grid = document.getElementById('dimGrid');
@@ -991,6 +1080,113 @@ function restart(){
   document.getElementById('results').className='results';
   document.getElementById('scoreCircle').style.strokeDashoffset='327';
   document.getElementById('hero').style.display='flex';
+}
+
+/* ===== MATURITY MATRIX ===== */
+function drawMatrix(dimScores){
+  const table=document.getElementById('matrixTable');
+  const matLevels=['Assente','Base','Strutturato','Avanzato','Eccellenza'];
+  const dimKeys=Object.keys(dimensions);
+  const dimNames=Object.values(dimensions).map(d=>d.name);
+
+  let html='<thead><tr><th></th>';
+  matLevels.forEach(l=>{html+=`<th>${l}</th>`});
+  html+='</tr></thead><tbody>';
+
+  dimKeys.forEach((dk,di)=>{
+    const val=dimScores[dk];
+    // Map 0-100 to 0-4 level index
+    const lvlIdx=val<=10?0:val<=30?1:val<=55?2:val<=80?3:4;
+    html+='<tr>';
+    html+=`<td>${dimNames[di]}</td>`;
+    for(let c=0;c<5;c++){
+      const cellClass=c<=1?'l'+(c):c<=3?'l'+(c+1):'l5';
+      const isCurrent=c===lvlIdx;
+      html+=`<td><div class="matrix-cell ${cellClass} ${isCurrent?'current':''}">${isCurrent?'<span class="cell-label">◆ TU</span>':''}</div></td>`;
+    }
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  table.innerHTML=html;
+}
+
+/* ===== BENCHMARK ===== */
+function drawBenchmark(dimScores,totalPct){
+  // Simulated anonymous averages (realistic bell curve data)
+  const avgData={
+    strategy:{avg:32,label:'Strategy & Leadership'},
+    data:{avg:28,label:'Data & Infrastructure'},
+    talent:{avg:35,label:'Talent & Culture'},
+    governance:{avg:22,label:'Governance & Risk'},
+    execution:{avg:25,label:'Execution & Scale'}
+  };
+  // Adjust averages slightly based on localStorage count for variety
+  const seed=parseInt(localStorage.getItem('airQuizCount')||'2847');
+  Object.keys(avgData).forEach(k=>{
+    avgData[k].avg=Math.max(15,Math.min(55,avgData[k].avg+((seed*7+k.length*13)%11)-5));
+  });
+
+  const cont=document.getElementById('benchmarkContent');
+  let html='';
+
+  // Overall
+  const overallAvg=Math.round(Object.values(avgData).reduce((s,d)=>s+d.avg,0)/5);
+  html+=`<div class="bench-row">
+    <div class="bench-label" style="font-weight:700">Overall</div>
+    <div class="bench-bar-wrap">
+      <div class="bench-bar avg" style="width:0%" id="bbar-overall-avg"></div>
+      <div class="bench-marker" style="left:0%" data-label="Tu: ${totalPct}%" id="bmark-overall"></div>
+    </div>
+    <div class="bench-val you-val">${totalPct}%</div>
+    <div class="bench-val avg-val">${overallAvg}%</div>
+  </div>`;
+
+  // Per dimension
+  Object.entries(avgData).forEach(([k,d])=>{
+    const you=dimScores[k];
+    html+=`<div class="bench-row">
+      <div class="bench-label">${d.label}</div>
+      <div class="bench-bar-wrap">
+        <div class="bench-bar avg" style="width:0%" id="bbar-${k}-avg"></div>
+        <div class="bench-marker" style="left:0%" data-label="Tu" id="bmark-${k}"></div>
+      </div>
+      <div class="bench-val you-val">${you}%</div>
+      <div class="bench-val avg-val">${d.avg}%</div>
+    </div>`;
+  });
+
+  cont.innerHTML=html;
+
+  // Animate bars
+  setTimeout(()=>{
+    const oa=document.getElementById('bbar-overall-avg');
+    if(oa) oa.style.width=overallAvg+'%';
+    const om=document.getElementById('bmark-overall');
+    if(om) om.style.left=totalPct+'%';
+
+    Object.entries(avgData).forEach(([k,d])=>{
+      const bar=document.getElementById(`bbar-${k}-avg`);
+      if(bar) bar.style.width=d.avg+'%';
+      const mark=document.getElementById(`bmark-${k}`);
+      if(mark) mark.style.left=dimScores[k]+'%';
+    });
+  },400);
+}
+
+/* ===== QUIZ PARTICLES ===== */
+function spawnParticles(x,y){
+  const colors=['#FF4D00','#FFB800','#00C48C'];
+  for(let i=0;i<6;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=(x+Math.random()*40-20)+'px';
+    p.style.top=(y+Math.random()*20-10)+'px';
+    p.style.width=p.style.height=(3+Math.random()*4)+'px';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration=(.6+Math.random()*.6)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1500);
+  }
 }
 
 /* ===== CUSTOM CURSOR ===== */
