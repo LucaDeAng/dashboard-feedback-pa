@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Readiness Score — Quanto è pronta la tua azienda per la GenAI?</title>
+<meta property="og:title" content="AI Readiness Score — Quanto è pronta la tua azienda?">
+<meta property="og:description" content="10 domande. 2 minuti. Scopri il tuo livello di maturità GenAI.">
+<meta name="description" content="Assessment interattivo sulla maturità GenAI della tua organizzazione. By Luca De Angelis.">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0a;--fg:#f0ece4;--accent:#FF4D00;--accent2:#FFB800;
+  --card:#151515;--border:#2a2a2a;--muted:#777;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative}
+.hero::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,0,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hero-badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);padding:.4rem 1.2rem;border-radius:100px;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .8s ease both}
+.hero h1{font-family:var(--serif);font-size:clamp(3rem,8vw,7rem);line-height:.95;letter-spacing:-.03em;max-width:900px;animation:fadeUp .8s .1s ease both}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p.sub{font-size:1.15rem;color:var(--muted);max-width:500px;margin:1.5rem auto 2.5rem;line-height:1.6;animation:fadeUp .8s .2s ease both}
+.cta-btn{background:var(--accent);color:#fff;border:none;padding:1rem 3rem;font-size:1.1rem;font-family:var(--sans);font-weight:700;border-radius:100px;cursor:pointer;letter-spacing:.05em;transition:all .3s;animation:fadeUp .8s .3s ease both;text-transform:uppercase}
+.cta-btn:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(255,77,0,.3)}
+.hero-footer{position:absolute;bottom:2rem;font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+
+/* QUIZ */
+.quiz-container{display:none;min-height:100vh;padding:2rem;max-width:720px;margin:0 auto}
+.progress-wrap{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s cubic-bezier(.4,0,.2,1);width:0}
+.q-counter{font-size:.8rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;margin-top:4rem}
+.q-text{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2;margin-bottom:2rem}
+.options{display:flex;flex-direction:column;gap:.75rem}
+.opt-btn{background:var(--card);border:1px solid var(--border);color:var(--fg);padding:1.1rem 1.5rem;border-radius:12px;font-size:1rem;font-family:var(--sans);cursor:pointer;text-align:left;transition:all .25s;position:relative;overflow:hidden}
+.opt-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,77,0,.1),transparent);opacity:0;transition:opacity .25s}
+.opt-btn:hover{border-color:var(--accent);transform:translateX(6px)}.opt-btn:hover::before{opacity:1}
+.opt-btn.selected{border-color:var(--accent);background:rgba(255,77,0,.08)}
+.opt-label{font-size:.7rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.25rem;display:block;font-weight:700}
+
+/* RESULTS */
+.results{display:none;min-height:100vh;padding:2rem 2rem 4rem;max-width:800px;margin:0 auto}
+.results-header{text-align:center;padding-top:4rem}
+.score-ring{width:200px;height:200px;margin:0 auto 1.5rem;position:relative}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke-width:6}
+.score-ring .bg{stroke:var(--border)}
+.score-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:3.5rem;font-style:italic}
+.score-label{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);margin-bottom:.5rem}
+.score-sub{color:var(--muted);max-width:520px;margin:0 auto 3rem;line-height:1.6}
+
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:3rem}
+.dim-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
+.dim-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent);border-radius:4px 0 0 4px}
+.dim-name{font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.dim-bar-wrap{height:6px;background:var(--border);border-radius:3px;margin-bottom:.75rem;overflow:hidden}
+.dim-bar{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.dim-bar.low{background:#FF4D00}.dim-bar.mid{background:#FFB800}.dim-bar.high{background:#00C48C}
+.dim-insight{font-size:.9rem;color:var(--muted);line-height:1.5}
+
+.share-section{text-align:center;padding:2rem 0;border-top:1px solid var(--border)}
+.share-section h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:1rem}
+.share-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.share-btn{padding:.75rem 1.5rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--fg);font-family:var(--sans);font-size:.9rem;cursor:pointer;transition:all .25s}
+.share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.share-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.share-btn.primary:hover{background:#e64400}
+
+.credit{text-align:center;margin-top:2rem;font-size:.75rem;color:var(--muted)}
+.credit a{color:var(--accent);text-decoration:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .5s ease both}
+
+@media(max-width:600px){
+  .hero h1{font-size:2.6rem}
+  .dim-grid{grid-template-columns:1fr}
+  .q-text{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <span class="hero-badge">Assessment interattivo</span>
+  <h1>Quanto è pronta<br>la tua azienda<br>per la <em>GenAI</em>?</h1>
+  <p class="sub">10 domande. 2 minuti. Un quadro chiaro della maturità AI della tua organizzazione — e cosa fare domani.</p>
+  <button class="cta-btn" onclick="startQuiz()">Scopri il tuo score →</button>
+  <div class="hero-footer">By Luca De Angelis — GenAI Specialist</div>
+</section>
+
+<!-- QUIZ -->
+<section class="quiz-container" id="quiz">
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="questionArea"></div>
+</section>
+
+<!-- RESULTS -->
+<section class="results" id="results">
+  <div class="results-header">
+    <div class="score-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="52"/>
+        <circle class="fg" id="scoreCircle" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="327"/>
+      </svg>
+      <div class="score-num" id="scoreNum">0</div>
+    </div>
+    <div class="score-label" id="scoreLabel"></div>
+    <p class="score-sub" id="scoreSub"></p>
+  </div>
+  <div class="dim-grid" id="dimGrid"></div>
+  <div class="share-section">
+    <h3>Condividi il tuo risultato</h3>
+    <div class="share-btns">
+      <button class="share-btn primary" onclick="shareLinkedIn()">Condividi su LinkedIn</button>
+      <button class="share-btn" onclick="copyResult()">Copia risultato</button>
+      <button class="share-btn" onclick="restart()">Rifai il test</button>
+    </div>
+  </div>
+  <div class="credit">Creato da <a href="https://www.linkedin.com/in/lucadeangelis-/" target="_blank">Luca De Angelis</a> — GenAI Specialist</div>
+</section>
+
+<script>
+const questions = [
+  {
+    dim: "strategy",
+    text: "La GenAI è parte della strategia aziendale?",
+    opts: [
+      { label: "A", text: "Non è mai stata discussa a livello direzionale", score: 0 },
+      { label: "B", text: "Se ne parla, ma senza un piano concreto", score: 1 },
+      { label: "C", text: "C'è una roadmap con owner e milestone definite", score: 2 },
+      { label: "D", text: "È integrata nel piano strategico con KPI e budget dedicato", score: 3 }
+    ]
+  },
+  {
+    dim: "knowledge",
+    text: "Com'è la vostra knowledge base?",
+    opts: [
+      { label: "A", text: "PDF sparsi, nessuna struttura — un caos documentale", score: 0 },
+      { label: "B", text: "Esiste un repository, ma non è pensato per l'AI", score: 1 },
+      { label: "C", text: "Strutturata e aggiornata, ma non ottimizzata per LLM", score: 2 },
+      { label: "D", text: "Progettata per essere consumata da agenti AI", score: 3 }
+    ]
+  },
+  {
+    dim: "talent",
+    text: "Qual è il livello di competenze AI nel team?",
+    opts: [
+      { label: "A", text: "Nessuno ha competenze specifiche su AI/GenAI", score: 0 },
+      { label: "B", text: "Qualche early adopter usa ChatGPT, ma niente di strutturato", score: 1 },
+      { label: "C", text: "Team dedicato con competenze di prompt engineering e AI", score: 2 },
+      { label: "D", text: "Centro di eccellenza AI con skill cross-funzionali", score: 3 }
+    ]
+  },
+  {
+    dim: "governance",
+    text: "Come gestite la governance dell'AI?",
+    opts: [
+      { label: "A", text: "Non c'è nessuna policy — ognuno fa come vuole", score: 0 },
+      { label: "B", text: "Linee guida informali, niente di ufficiale", score: 1 },
+      { label: "C", text: "Policy approvata con ruoli e responsabilità definite", score: 2 },
+      { label: "D", text: "Framework completo: etica, compliance, audit, EU AI Act ready", score: 3 }
+    ]
+  },
+  {
+    dim: "data",
+    text: "Quanto sono accessibili e puliti i vostri dati?",
+    opts: [
+      { label: "A", text: "Silos ovunque — ogni sistema parla una lingua diversa", score: 0 },
+      { label: "B", text: "Qualche integrazione, ma tanti buchi e duplicazioni", score: 1 },
+      { label: "C", text: "Data lake/warehouse funzionante con buona qualità", score: 2 },
+      { label: "D", text: "Dati unificati, real-time, pronti per alimentare modelli AI", score: 3 }
+    ]
+  },
+  {
+    dim: "strategy",
+    text: "Chi sponsorizza i progetti AI?",
+    opts: [
+      { label: "A", text: "Nessuno — sono iniziative bottom-up senza copertura", score: 0 },
+      { label: "B", text: "Un singolo entusiasta, senza potere decisionale reale", score: 1 },
+      { label: "C", text: "Un dirigente senior che protegge il budget", score: 2 },
+      { label: "D", text: "C-level con mandato chiaro e governance cross-funzionale", score: 3 }
+    ]
+  },
+  {
+    dim: "knowledge",
+    text: "Come misurate il successo dei progetti AI?",
+    opts: [
+      { label: "A", text: "Non misuriamo — lanciamo e speriamo", score: 0 },
+      { label: "B", text: "KPI generici tipo \"soddisfazione utente\"", score: 1 },
+      { label: "C", text: "Metriche specifiche: accuracy, resolution rate, CSAT", score: 2 },
+      { label: "D", text: "Framework Test & Learn con A/B test, iterazioni continue, LLM-as-Judge", score: 3 }
+    ]
+  },
+  {
+    dim: "talent",
+    text: "Come collaborate tra IT, Business e Operations sull'AI?",
+    opts: [
+      { label: "A", text: "Non collaboriamo — IT decide tutto", score: 0 },
+      { label: "B", text: "Qualche riunione, ma ognuno tira per la sua strada", score: 1 },
+      { label: "C", text: "Team cross-funzionale con cadenza regolare", score: 2 },
+      { label: "D", text: "Squad agile dedicata con ownership condivisa su risultati", score: 3 }
+    ]
+  },
+  {
+    dim: "governance",
+    text: "Avete già qualcosa in produzione con GenAI?",
+    opts: [
+      { label: "A", text: "Zero — solo demo e proof of concept", score: 0 },
+      { label: "B", text: "Un pilota limitato, non ancora scalato", score: 1 },
+      { label: "C", text: "Soluzione in produzione su un caso d'uso specifico", score: 2 },
+      { label: "D", text: "Più soluzioni in produzione, con pipeline di scaling", score: 3 }
+    ]
+  },
+  {
+    dim: "data",
+    text: "Qual è l'approccio al change management per l'AI?",
+    opts: [
+      { label: "A", text: "\"L'AI sostituirà tutti\" — panico e resistenza", score: 0 },
+      { label: "B", text: "Comunicazione generica, poca formazione concreta", score: 1 },
+      { label: "C", text: "Piano di upskilling con champion interni", score: 2 },
+      { label: "D", text: "Cultura AI-first: formazione continua, incentivi, community interna", score: 3 }
+    ]
+  }
+];
+
+const dimensions = {
+  strategy: { name: "Strategia & Leadership", insights: {
+    low: "La GenAI non è ancora sul radar del management. Senza sponsorship C-level, qualsiasi iniziativa resterà un esperimento.",
+    mid: "C'è interesse ma manca un piano strutturato. Il rischio: investire in POC che non scalano mai.",
+    high: "Leadership allineata e roadmap chiara. Siete nella posizione ideale per accelerare."
+  }},
+  knowledge: { name: "Knowledge & Metriche", insights: {
+    low: "Il bot è intelligente quanto i dati che gli dai. Senza una KB strutturata e KPI chiari, navighi alla cieca.",
+    mid: "Le basi ci sono, ma manca l'ottimizzazione per l'AI. Focus su strutturare la conoscenza per gli LLM.",
+    high: "Conoscenza strutturata e metriche solide. La base per scalare con confidenza."
+  }},
+  talent: { name: "Competenze & Collaborazione", insights: {
+    low: "Senza competenze dedicate e collaborazione cross-funzionale, l'AI resterà un giocattolo dell'IT.",
+    mid: "Competenze presenti ma frammentate. Serve un modello operativo che unisca business, IT e operations.",
+    high: "Team strutturato e collaborazione matura. Il vero differenziale competitivo."
+  }},
+  governance: { name: "Governance & Produzione", insights: {
+    low: "Nessuna governance e niente in produzione. Il gap tra demo e realtà è ancora enorme.",
+    mid: "Primi passi concreti, ma serve un framework per scalare in modo sicuro e conforme.",
+    high: "Governance solida e presenza in produzione. Siete tra il 5% che ha davvero deployato."
+  }},
+  data: { name: "Dati & Change Management", insights: {
+    low: "Dati frammentati e resistenza al cambiamento. I due killer silenziosi di ogni progetto AI.",
+    mid: "Infrastruttura dati discreta ma il change management è il collo di bottiglia. L'AI è un progetto di persone.",
+    high: "Dati pronti e cultura orientata all'AI. La combinazione più rara e più potente."
+  }}
+};
+
+const levels = [
+  { max: 25, label: "Explorer", color: "#FF4D00", desc: "La tua organizzazione è nella fase di esplorazione. Non è un problema — il 70% delle aziende è qui. Ma il rischio è restare bloccati tra POC infiniti e promesse non mantenute. Serve un piano, non un altro esperimento." },
+  { max: 50, label: "Experimenter", color: "#FFB800", desc: "State sperimentando, ma in modo frammentato. I pezzi ci sono, manca il puzzle. Il prossimo passo: passare dalla logica dei \"progetti\" alla logica della \"trasformazione\"." },
+  { max: 75, label: "Builder", color: "#0FA", desc: "Siete tra i pochi che stanno costruendo davvero. Avete superato la fase demo. Ora la sfida è scalare senza perdere qualità e governance." },
+  { max: 100, label: "Leader", color: "#00C48C", desc: "Top 5%. La GenAI è parte del vostro DNA operativo. La sfida ora è mantenere il vantaggio e diventare un caso di riferimento nel vostro settore." }
+];
+
+let current = 0;
+let answers = [];
+
+function startQuiz() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  const area = document.getElementById('questionArea');
+  area.innerHTML = '';
+  area.className = 'fade-in';
+
+  const pct = ((current) / questions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  area.innerHTML = `
+    <div class="q-counter">Domanda ${current + 1} di ${questions.length}</div>
+    <div class="q-text">${q.text}</div>
+    <div class="options">
+      ${q.opts.map((o, i) => `
+        <button class="opt-btn" onclick="selectAnswer(${i})">
+          <span class="opt-label">${o.label}</span>
+          ${o.text}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectAnswer(idx) {
+  const q = questions[current];
+  answers.push({ dim: q.dim, score: q.opts[idx].score });
+
+  const btns = document.querySelectorAll('.opt-btn');
+  btns[idx].classList.add('selected');
+
+  setTimeout(() => {
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      showResults();
+    }
+  }, 350);
+}
+
+function showResults() {
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+
+  const maxScore = questions.length * 3;
+  const totalScore = answers.reduce((s, a) => s + a.score, 0);
+  const pct = Math.round((totalScore / maxScore) * 100);
+
+  // Animate score
+  const circle = document.getElementById('scoreCircle');
+  const circumference = 327;
+  setTimeout(() => {
+    circle.style.strokeDashoffset = circumference - (circumference * pct / 100);
+  }, 200);
+
+  let displayed = 0;
+  const numEl = document.getElementById('scoreNum');
+  const interval = setInterval(() => {
+    displayed++;
+    numEl.textContent = displayed;
+    if (displayed >= pct) clearInterval(interval);
+  }, 20);
+
+  // Level
+  const level = levels.find(l => pct <= l.max) || levels[levels.length - 1];
+  document.getElementById('scoreLabel').textContent = `Livello: ${level.label}`;
+  document.getElementById('scoreLabel').style.color = level.color;
+  document.getElementById('scoreSub').textContent = level.desc;
+  circle.style.stroke = level.color;
+
+  // Dimensions
+  const dimScores = {};
+  for (const [key] of Object.entries(dimensions)) {
+    const dimAnswers = answers.filter(a => a.dim === key);
+    const dimTotal = dimAnswers.reduce((s, a) => s + a.score, 0);
+    const dimMax = dimAnswers.length * 3;
+    dimScores[key] = dimMax > 0 ? Math.round((dimTotal / dimMax) * 100) : 0;
+  }
+
+  const grid = document.getElementById('dimGrid');
+  grid.innerHTML = '';
+  for (const [key, dim] of Object.entries(dimensions)) {
+    const val = dimScores[key];
+    const cat = val <= 33 ? 'low' : val <= 66 ? 'mid' : 'high';
+    grid.innerHTML += `
+      <div class="dim-card fade-in">
+        <div class="dim-name">${dim.name}</div>
+        <div class="dim-bar-wrap"><div class="dim-bar ${cat}" style="width:${val}%"></div></div>
+        <div class="dim-insight">${dim.insights[cat]}</div>
+      </div>
+    `;
+  }
+
+  window._resultText = `Ho appena fatto l'AI Readiness Assessment di Luca De Angelis.\n\n Il mio score: ${pct}/100 — Livello ${level.label}\n\n${Object.entries(dimensions).map(([k, d]) => `→ ${d.name}: ${dimScores[k]}%`).join('\n')}\n\nFai il test anche tu 👇\nhttps://lucadeang.github.io/ai-readiness/\n\n#GenAI #AITransformation #AIReadiness`;
+}
+
+function shareLinkedIn() {
+  const text = encodeURIComponent(window._resultText);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://lucadeang.github.io/ai-readiness/')}&text=${text}`, '_blank');
+}
+
+function copyResult() {
+  navigator.clipboard.writeText(window._resultText).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copiato! ✓';
+    setTimeout(() => btn.textContent = 'Copia risultato', 2000);
+  });
+}
+
+function restart() {
+  current = 0;
+  answers = [];
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('hero').style.display = 'flex';
+}
+</script>
+</body>
+</html>
