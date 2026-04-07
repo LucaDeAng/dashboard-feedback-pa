@@ -5,86 +5,261 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Readiness Score — Quanto è pronta la tua azienda per la GenAI?</title>
 <meta property="og:title" content="AI Readiness Score — Quanto è pronta la tua azienda?">
-<meta property="og:description" content="10 domande. 2 minuti. Scopri il tuo livello di maturità GenAI.">
+<meta property="og:description" content="10 domande. 0 bugie. Scopri il tuo vero score AI.">
 <meta name="description" content="Assessment interattivo sulla maturità GenAI della tua organizzazione. By Luca De Angelis.">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0a0a0a;--fg:#f0ece4;--accent:#FF4D00;--accent2:#FFB800;
-  --card:#151515;--border:#2a2a2a;--muted:#777;
+  --bg:#09090b;--bg-subtle:#111113;--fg:#f0ece4;--fg-muted:#888;--fg-subtle:#555;
+  --accent:#FF4D00;--accent-soft:#FF6B35;--accent2:#FFB800;--accent3:#00C48C;--accent4:#6C63FF;--accent5:#FF3366;
+  --card:#141416;--card-hover:#1a1a1e;--border:#222225;--border-hover:#333338;
+  --level-dreamer:#FF4D00;--level-tinkerer:#FFB800;--level-operator:#0FA;--level-architect:#00C48C;
   --serif:'Instrument Serif',Georgia,serif;
   --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'Space Grotesk',var(--sans);
 }
 html{font-size:16px;scroll-behavior:smooth}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 
 /* GRAIN */
-body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");background-size:256px 256px;pointer-events:none;z-index:9999;opacity:.4;mix-blend-mode:overlay}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative}
-.hero::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,0,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
-.hero-badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);padding:.4rem 1.2rem;border-radius:100px;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .8s ease both}
-.hero h1{font-family:var(--serif);font-size:clamp(3rem,8vw,7rem);line-height:.95;letter-spacing:-.03em;max-width:900px;animation:fadeUp .8s .1s ease both}
-.hero h1 em{font-style:italic;color:var(--accent)}
-.hero p.sub{font-size:1.15rem;color:var(--muted);max-width:500px;margin:1.5rem auto 2.5rem;line-height:1.6;animation:fadeUp .8s .2s ease both}
-.cta-btn{background:var(--accent);color:#fff;border:none;padding:1rem 3rem;font-size:1.1rem;font-family:var(--sans);font-weight:700;border-radius:100px;cursor:pointer;letter-spacing:.05em;transition:all .3s;animation:fadeUp .8s .3s ease both;text-transform:uppercase}
-.cta-btn:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(255,77,0,.3)}
-.hero-footer{position:absolute;bottom:2rem;font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:-50%;background:radial-gradient(ellipse 80% 50% at 20% 40%,rgba(255,77,0,.15),transparent 50%),radial-gradient(ellipse 60% 80% at 80% 20%,rgba(255,184,0,.1),transparent 50%),radial-gradient(ellipse 50% 60% at 50% 80%,rgba(0,196,140,.08),transparent 50%);animation:auroraShift 15s ease-in-out infinite alternate;pointer-events:none;z-index:0}
+@keyframes auroraShift{0%{transform:translate(0,0) rotate(0deg) scale(1)}33%{transform:translate(5%,-3%) rotate(3deg) scale(1.05)}66%{transform:translate(-3%,5%) rotate(-2deg) scale(.98)}100%{transform:translate(2%,-2%) rotate(1deg) scale(1.02)}}
+
+.hero>*{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(255,77,0,.3);color:var(--accent);padding:.5rem 1.4rem;border-radius:100px;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:2.5rem;background:rgba(255,77,0,.05);backdrop-filter:blur(10px);animation:heroReveal 1s cubic-bezier(.16,1,.3,1) .2s both}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:badgePulse 2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,77,0,.4)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(255,77,0,0)}}
+
+.hero h1{font-family:var(--serif);font-size:clamp(3rem,8vw,7rem);line-height:.95;letter-spacing:-.03em;max-width:900px;perspective:800px}
+.hero-line{display:block;animation:heroLineReveal 1s cubic-bezier(.16,1,.3,1) both}
+.hero-line:nth-child(1){animation-delay:.3s}
+.hero-line:nth-child(2){animation-delay:.45s}
+.hero-line:nth-child(3){animation-delay:.6s}
+@keyframes heroLineReveal{0%{opacity:0;transform:translateY(60px) rotateX(15deg)}100%{opacity:1;transform:translateY(0) rotateX(0deg)}}
+@keyframes heroReveal{0%{opacity:0;transform:translateY(40px) scale(.97);filter:blur(10px)}60%{filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent-soft),var(--accent));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientText 4s ease infinite}
+@keyframes gradientText{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.hero p.sub{font-size:1.15rem;color:var(--fg-muted);max-width:500px;margin:1.5rem auto 2.5rem;line-height:1.6;animation:heroReveal 1s cubic-bezier(.16,1,.3,1) .8s both}
+
+.cta-btn{background:var(--accent);color:#fff;border:none;padding:1.1rem 3.5rem;font-size:1.05rem;font-family:var(--sans);font-weight:700;border-radius:100px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);animation:heroReveal 1s cubic-bezier(.16,1,.3,1) 1s both;z-index:1}
+.cta-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:btnShimmer 3s ease-in-out infinite;z-index:-1}
+.cta-btn::after{content:'';position:absolute;inset:-3px;border-radius:100px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent));z-index:-2;opacity:0;transition:opacity .4s;filter:blur(12px)}
+.cta-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 20px 60px rgba(255,77,0,.25),0 0 0 1px rgba(255,77,0,.1)}
+.cta-btn:hover::after{opacity:1}
+.cta-btn:active{transform:translateY(0) scale(.98)}
+@keyframes btnShimmer{0%,100%{left:-100%}50%{left:100%}}
+
+.hero-footer{position:absolute;bottom:2rem;font-size:.75rem;color:var(--fg-subtle);letter-spacing:.1em;z-index:1}
+.hero-social-proof{font-size:.8rem;color:var(--fg-subtle);margin-top:1.5rem;animation:heroReveal 1s cubic-bezier(.16,1,.3,1) 1.2s both}
+.hero-social-proof strong{color:var(--accent2)}
 
 /* QUIZ */
 .quiz-container{display:none;min-height:100vh;padding:2rem;max-width:720px;margin:0 auto}
-.progress-wrap{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:100}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s cubic-bezier(.4,0,.2,1);width:0}
-.q-counter{font-size:.8rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;margin-top:4rem}
-.q-text{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2;margin-bottom:2rem}
+.progress-wrap{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;background:rgba(9,9,11,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04)}
+.progress-steps{display:flex;align-items:center;width:100%;gap:0}
+.progress-step{flex:1;height:3px;background:var(--border);position:relative;transition:background .5s cubic-bezier(.16,1,.3,1)}
+.progress-step.completed{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.progress-step.active{background:linear-gradient(90deg,var(--accent),var(--border))}
+.progress-step.active::after{content:'';position:absolute;right:-4px;top:50%;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translateY(-50%);box-shadow:0 0 12px rgba(255,77,0,.5);animation:stepPulse 1.5s ease infinite}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 12px rgba(255,77,0,.5)}50%{box-shadow:0 0 20px rgba(255,77,0,.8)}}
+.progress-msg{text-align:center;font-size:.75rem;color:var(--accent2);margin-top:.5rem;min-height:1.2em;opacity:0;transition:opacity .4s}
+.progress-msg.visible{opacity:1}
+
+.q-counter{font-family:var(--mono);font-size:.8rem;color:var(--fg-muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;margin-top:5rem}
+.q-subtitle{font-size:.85rem;color:var(--fg-subtle);font-style:italic;margin-bottom:1.5rem;min-height:1.2em}
+.q-text{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2;margin-bottom:.5rem}
 .options{display:flex;flex-direction:column;gap:.75rem}
-.opt-btn{background:var(--card);border:1px solid var(--border);color:var(--fg);padding:1.1rem 1.5rem;border-radius:12px;font-size:1rem;font-family:var(--sans);cursor:pointer;text-align:left;transition:all .25s;position:relative;overflow:hidden}
-.opt-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,77,0,.1),transparent);opacity:0;transition:opacity .25s}
-.opt-btn:hover{border-color:var(--accent);transform:translateX(6px)}.opt-btn:hover::before{opacity:1}
-.opt-btn.selected{border-color:var(--accent);background:rgba(255,77,0,.08)}
+
+.opt-btn{background:var(--card);border:1px solid var(--border);color:var(--fg);padding:1.2rem 1.5rem 1.2rem 1.8rem;border-radius:14px;font-size:1rem;font-family:var(--sans);cursor:pointer;text-align:left;transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;opacity:0;animation:optionReveal .4s cubic-bezier(.16,1,.3,1) both}
+.opt-btn:nth-child(1){animation-delay:.1s}
+.opt-btn:nth-child(2){animation-delay:.18s}
+.opt-btn:nth-child(3){animation-delay:.26s}
+.opt-btn:nth-child(4){animation-delay:.34s}
+@keyframes optionReveal{0%{opacity:0;transform:translateY(16px) translateX(-8px)}100%{opacity:1;transform:translateY(0) translateX(0)}}
+
+.opt-btn::before{content:'';position:absolute;left:0;top:50%;width:3px;height:0;background:var(--accent);border-radius:0 3px 3px 0;transition:all .3s cubic-bezier(.16,1,.3,1);transform:translateY(-50%)}
+.opt-btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 0% 50%,rgba(255,77,0,.08),transparent 70%);opacity:0;transition:opacity .3s}
+.opt-btn:hover{border-color:rgba(255,77,0,.4);transform:translateX(4px);background:rgba(255,77,0,.03)}
+.opt-btn:hover::before{height:60%}
+.opt-btn:hover::after{opacity:1}
+.opt-btn.selected{border-color:var(--accent);background:rgba(255,77,0,.08);transform:translateX(4px) scale(.98)}
+.opt-btn.selected::before{height:100%;background:linear-gradient(180deg,var(--accent),var(--accent2))}
 .opt-label{font-size:.7rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.25rem;display:block;font-weight:700}
 
+.q-entering{animation:questionEnter .5s cubic-bezier(.16,1,.3,1) both}
+.q-exiting{animation:questionExit .3s cubic-bezier(.7,0,.84,0) both}
+@keyframes questionEnter{0%{opacity:0;transform:translateX(60px);filter:blur(4px)}100%{opacity:1;transform:translateX(0);filter:blur(0)}}
+@keyframes questionExit{0%{opacity:1;transform:translateX(0);filter:blur(0)}100%{opacity:0;transform:translateX(-60px);filter:blur(4px)}}
+
+.combo-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:1.2rem;font-weight:700;color:var(--accent2);pointer-events:none;z-index:200;animation:comboAnim .8s ease both}
+@keyframes comboAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-60%) scale(1)}}
+
+/* SUSPENSE */
+.suspense{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem}
+.suspense-text{font-family:var(--serif);font-size:1.5rem;color:var(--fg-muted);margin-bottom:2rem}
+.suspense-steps{display:flex;flex-direction:column;gap:.75rem;align-items:center}
+.suspense-step{font-size:.9rem;color:var(--fg-subtle);opacity:0;transition:all .4s}
+.suspense-step.visible{opacity:1;color:var(--accent)}
+
 /* RESULTS */
-.results{display:none;min-height:100vh;padding:2rem 2rem 4rem;max-width:800px;margin:0 auto}
-.results-header{text-align:center;padding-top:4rem}
-.score-ring{width:200px;height:200px;margin:0 auto 1.5rem;position:relative}
-.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.results{display:none;min-height:100vh;padding:2rem 2rem 4rem;max-width:800px;margin:0 auto;position:relative}
+.results::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;transition:background 1s}
+.results.level-dreamer::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,77,0,.08),transparent 60%)}
+.results.level-tinkerer::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,184,0,.08),transparent 60%)}
+.results.level-operator::before{background:radial-gradient(ellipse at 50% 0%,rgba(0,255,170,.06),transparent 60%)}
+.results.level-architect::before{background:radial-gradient(ellipse at 50% 0%,rgba(0,196,140,.1),transparent 50%),radial-gradient(ellipse at 70% 20%,rgba(255,184,0,.06),transparent 50%)}
+
+.results-report{background:linear-gradient(180deg,rgba(21,21,21,.9),var(--card));border:1px solid var(--border);border-radius:24px;padding:3rem 2.5rem;position:relative;overflow:hidden}
+.results-report::after{content:'AI READINESS';position:absolute;bottom:2rem;right:2rem;font-family:var(--serif);font-size:6rem;font-style:italic;opacity:.02;pointer-events:none;white-space:nowrap}
+
+.results-header{text-align:center;padding-top:1rem;margin-bottom:2rem}
+.score-ring{width:220px;height:220px;margin:0 auto 2rem;position:relative}
+.score-ring::before{content:'';position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,0,.2),transparent 70%);animation:ringGlow 3s ease-in-out infinite alternate}
+@keyframes ringGlow{0%{opacity:.5;transform:scale(.9)}100%{opacity:1;transform:scale(1.1)}}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg);position:relative;z-index:1}
 .score-ring circle{fill:none;stroke-width:6}
 .score-ring .bg{stroke:var(--border)}
-.score-ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
-.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:3.5rem;font-style:italic}
-.score-label{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);margin-bottom:.5rem}
-.score-sub{color:var(--muted);max-width:520px;margin:0 auto 3rem;line-height:1.6}
+.score-ring .fg{stroke:url(#scoreGradient);stroke-linecap:round;filter:drop-shadow(0 0 8px rgba(255,77,0,.4));transition:stroke-dashoffset 2s cubic-bezier(.16,1,.3,1)}
+.score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-size:4rem;font-weight:700;line-height:1;z-index:2}
+.score-num small{font-size:.8rem;font-family:var(--sans);font-weight:400;color:var(--fg-muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.25rem}
 
-.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:3rem}
-.dim-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
-.dim-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent);border-radius:4px 0 0 4px}
+.score-reaction{font-family:var(--serif);font-size:2rem;font-style:italic;margin-bottom:.5rem;opacity:0;animation:fadeUp .5s ease .5s both}
+.score-label{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:.25rem}
+.score-tagline{font-size:.95rem;color:var(--fg-subtle);font-style:italic;margin-bottom:1rem}
+.score-sub{color:var(--fg-muted);max-width:520px;margin:0 auto 1.5rem;line-height:1.6;font-size:.95rem}
+.score-percentile{font-family:var(--mono);font-size:.85rem;color:var(--accent2);margin-bottom:1rem}
+.score-time{font-size:.8rem;color:var(--fg-subtle);margin-bottom:2rem}
+
+/* RADAR */
+.radar-section{text-align:center;margin:2rem 0}
+.radar-chart{width:280px;height:280px;margin:0 auto;position:relative}
+.radar-bg{position:absolute;inset:0;border-radius:50%}
+.radar-svg{width:100%;height:100%}
+.radar-grid{stroke:var(--border);fill:none;stroke-width:.5}
+.radar-shape{fill:rgba(255,77,0,.15);stroke:var(--accent);stroke-width:2;transition:all 1s cubic-bezier(.16,1,.3,1);animation:radarReveal 1.5s cubic-bezier(.16,1,.3,1) both}
+@keyframes radarReveal{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+.radar-label{font-size:.6rem;fill:var(--fg-muted);text-anchor:middle;font-family:var(--sans);text-transform:uppercase;letter-spacing:.06em}
+.radar-dot{fill:var(--accent);r:4;filter:drop-shadow(0 0 4px rgba(255,77,0,.5))}
+
+/* DIMENSION CARDS */
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:2rem 0}
+.dim-card{background:linear-gradient(135deg,var(--card),rgba(21,21,21,.8));border:1px solid var(--border);border-radius:20px;padding:1.8rem;position:relative;overflow:hidden;opacity:0;animation:cardReveal .6s cubic-bezier(.16,1,.3,1) both}
+.dim-card:nth-child(1){animation-delay:.6s}
+.dim-card:nth-child(2){animation-delay:.75s}
+.dim-card:nth-child(3){animation-delay:.9s}
+.dim-card:nth-child(4){animation-delay:1.05s}
+.dim-card:nth-child(5){animation-delay:1.2s}
+@keyframes cardReveal{0%{opacity:0;transform:translateY(30px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.dim-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;border-radius:20px 20px 0 0}
+.dim-card.low::before{background:linear-gradient(90deg,#FF4D00,#FF6B35)}
+.dim-card.mid::before{background:linear-gradient(90deg,#FFB800,#FFD166)}
+.dim-card.high::before{background:linear-gradient(90deg,#00C48C,#0FA)}
+.dim-score{position:absolute;top:1rem;right:1.5rem;font-family:var(--mono);font-size:1.8rem;font-weight:700;opacity:.12}
 .dim-name{font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
-.dim-bar-wrap{height:6px;background:var(--border);border-radius:3px;margin-bottom:.75rem;overflow:hidden}
-.dim-bar{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.dim-bar.low{background:#FF4D00}.dim-bar.mid{background:#FFB800}.dim-bar.high{background:#00C48C}
-.dim-insight{font-size:.9rem;color:var(--muted);line-height:1.5}
+.dim-bar-wrap{height:4px;background:rgba(255,255,255,.05);border-radius:2px;margin-bottom:1rem;overflow:visible}
+.dim-bar{height:100%;border-radius:2px;position:relative;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+.dim-bar::after{content:'';position:absolute;right:0;top:-3px;width:10px;height:10px;border-radius:50%;background:inherit;filter:blur(4px)}
+.dim-bar.low{background:linear-gradient(90deg,#FF4D00,#FF6B35)}
+.dim-bar.mid{background:linear-gradient(90deg,#FFB800,#FFD166)}
+.dim-bar.high{background:linear-gradient(90deg,#00C48C,#0FA)}
+.dim-insight{font-size:.88rem;color:var(--fg-muted);line-height:1.5}
 
-.share-section{text-align:center;padding:2rem 0;border-top:1px solid var(--border)}
+/* NEXT STEPS */
+.next-steps{margin:2rem 0;padding:2rem;background:var(--card);border:1px solid var(--border);border-radius:20px}
+.next-steps h3{font-family:var(--serif);font-size:1.4rem;margin-bottom:1.5rem}
+.step-item{display:flex;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border)}
+.step-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.step-num{font-family:var(--mono);font-size:.75rem;color:var(--accent);font-weight:700;min-width:2rem;padding-top:.2rem}
+.step-text{font-size:.9rem;color:var(--fg-muted);line-height:1.5}
+
+/* BADGES */
+.badges-section{margin:2rem 0;text-align:center}
+.badges-section h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:1rem}
+.badges-grid{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:100px;font-size:.8rem;font-weight:700;border:1px solid var(--border);background:var(--card)}
+.badge.earned{border-color:var(--accent2);background:rgba(255,184,0,.08);color:var(--accent2)}
+.badge.earned .badge-icon{opacity:1}
+.badge-icon{font-size:1rem;opacity:.3}
+
+/* SPECIAL INSIGHTS & RED FLAGS */
+.special-section{margin:2rem 0}
+.special-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;border-left:4px solid var(--accent4)}
+.special-card.red-flag{border-left-color:var(--accent5)}
+.special-title{font-weight:700;font-size:.9rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.special-card.red-flag .special-title{color:var(--accent5)}
+.special-msg{font-size:.88rem;color:var(--fg-muted);line-height:1.5}
+
+/* SHARE */
+.share-section{text-align:center;padding:2.5rem;background:rgba(20,20,22,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:20px;margin-top:2rem}
 .share-section h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:1rem}
 .share-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
-.share-btn{padding:.75rem 1.5rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--fg);font-family:var(--sans);font-size:.9rem;cursor:pointer;transition:all .25s}
-.share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.share-btn{padding:.85rem 1.8rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--fg);font-family:var(--sans);font-size:.9rem;cursor:pointer;transition:all .25s;font-weight:500}
+.share-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
 .share-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.share-btn.primary:hover{background:#e64400}
+.share-btn.primary:hover{background:#e64400;transform:translateY(-1px)}
+.share-btn.whatsapp{background:#25D366;border-color:#25D366;color:#fff}
+.share-btn.whatsapp:hover{background:#1da851}
+.share-btn.challenge{border-color:var(--accent2);color:var(--accent2)}
+.share-btn.challenge:hover{background:rgba(255,184,0,.08)}
 
-.credit{text-align:center;margin-top:2rem;font-size:.75rem;color:var(--muted)}
+.credit{text-align:center;margin-top:2rem;font-size:.75rem;color:var(--fg-subtle)}
 .credit a{color:var(--accent);text-decoration:none}
+
+/* CHALLENGE BANNER */
+.challenge-banner{display:none;background:linear-gradient(135deg,rgba(255,184,0,.1),rgba(255,77,0,.1));border:1px solid rgba(255,184,0,.3);border-radius:16px;padding:1.5rem;text-align:center;margin-bottom:2rem}
+.challenge-banner p{font-family:var(--serif);font-size:1.2rem;color:var(--accent2)}
+
+/* CONFETTI */
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti-piece{position:fixed;z-index:9998;pointer-events:none;animation:confettiFall 3s ease-in forwards}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp .5s ease both}
 
+/* CURSOR */
+@media(hover:hover) and (pointer:fine){
+.custom-cursor{position:fixed;width:20px;height:20px;border:1.5px solid var(--accent);border-radius:50%;pointer-events:none;z-index:10000;transition:width .2s,height .2s,border-color .2s;transform:translate(-50%,-50%);mix-blend-mode:difference}
+.custom-cursor.hovering{width:50px;height:50px;background:rgba(255,77,0,.08);border-color:var(--accent2)}
+.cursor-dot{position:fixed;width:4px;height:4px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:10001;transform:translate(-50%,-50%)}
+}
+
+/* MOBILE */
 @media(max-width:600px){
-  .hero h1{font-size:2.6rem}
-  .dim-grid{grid-template-columns:1fr}
-  .q-text{font-size:1.4rem}
+  .hero h1{font-size:clamp(2.4rem,10vw,3.2rem)}
+  .hero p.sub{font-size:1rem;padding:0 .5rem}
+  .cta-btn{width:100%;max-width:320px;padding:1.2rem 2rem;font-size:1rem}
+  .opt-btn{padding:1.3rem 1.2rem;min-height:56px;font-size:.95rem;border-radius:16px;-webkit-tap-highlight-color:rgba(255,77,0,.1)}
+  .opt-btn:active{transform:scale(.97);background:rgba(255,77,0,.06)}
+  .q-text{font-size:clamp(1.3rem,5vw,1.6rem);margin-bottom:1rem}
+  .score-ring{width:170px;height:170px}
+  .score-num{font-size:3rem}
+  .dim-grid{grid-template-columns:1fr;gap:.75rem}
+  .dim-card{padding:1.3rem;border-radius:16px}
+  .radar-chart{width:220px;height:220px}
+  .share-btns{flex-direction:column}
+  .share-btn{width:100%;padding:1rem;font-size:1rem;min-height:50px}
+  .results-report{padding:2rem 1.5rem;border-radius:16px}
+  .custom-cursor,.cursor-dot{display:none!important}
+  .progress-wrap{padding:.8rem 1rem}
+}
+
+@media(hover:none){
+  .opt-btn.selected{animation:tapBounce .3s cubic-bezier(.16,1,.3,1)}
+  @keyframes tapBounce{0%{transform:scale(.95)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+  .cta-btn:active{transform:scale(.95);transition-duration:.1s}
+  .share-btn:active{transform:scale(.96);background:rgba(255,77,0,.05);transition-duration:.1s}
+}
+
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  .results{padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
+  .share-section{padding-bottom:calc(1.5rem + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
@@ -93,205 +268,382 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
 <!-- HERO -->
 <section class="hero" id="hero">
   <span class="hero-badge">Assessment interattivo</span>
-  <h1>Quanto è pronta<br>la tua azienda<br>per la <em>GenAI</em>?</h1>
-  <p class="sub">10 domande. 2 minuti. Un quadro chiaro della maturità AI della tua organizzazione — e cosa fare domani.</p>
-  <button class="cta-btn" onclick="startQuiz()">Scopri il tuo score →</button>
+  <h1>
+    <span class="hero-line">10 domande.</span>
+    <span class="hero-line">0 bugie.</span>
+    <span class="hero-line">Il tuo vero score <em>AI</em>.</span>
+  </h1>
+  <p class="sub">Scopri il livello di maturità GenAI della tua organizzazione — e cosa fare da domani mattina.</p>
+  <button class="cta-btn" onclick="startQuiz()">Scopri la verità →</button>
+  <div class="hero-social-proof" id="socialProof">Già <strong id="proofCount">2.847</strong> professionisti hanno fatto il test</div>
   <div class="hero-footer">By Luca De Angelis — GenAI Specialist</div>
 </section>
 
 <!-- QUIZ -->
 <section class="quiz-container" id="quiz">
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progressSteps"></div>
+  </div>
+  <div class="progress-msg" id="progressMsg"></div>
   <div id="questionArea"></div>
+</section>
+
+<!-- SUSPENSE -->
+<section class="suspense" id="suspense">
+  <div class="suspense-text">Analizziamo le tue risposte...</div>
+  <div class="suspense-steps" id="suspenseSteps">
+    <div class="suspense-step" id="ss1">Strategy & Leadership... ✓</div>
+    <div class="suspense-step" id="ss2">Data & Infrastructure... ✓</div>
+    <div class="suspense-step" id="ss3">Talent & Culture... ✓</div>
+    <div class="suspense-step" id="ss4">Governance & Risk... ✓</div>
+    <div class="suspense-step" id="ss5">Execution & Scale... ✓</div>
+  </div>
 </section>
 
 <!-- RESULTS -->
 <section class="results" id="results">
-  <div class="results-header">
-    <div class="score-ring">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="52"/>
-        <circle class="fg" id="scoreCircle" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="327"/>
-      </svg>
-      <div class="score-num" id="scoreNum">0</div>
-    </div>
-    <div class="score-label" id="scoreLabel"></div>
-    <p class="score-sub" id="scoreSub"></p>
+  <div class="challenge-banner" id="challengeBanner">
+    <p>Qualcuno ti ha sfidato con un punteggio di <strong id="challengeScore"></strong>. Fai meglio?</p>
   </div>
-  <div class="dim-grid" id="dimGrid"></div>
+  <div class="results-report">
+    <div class="results-header">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF4D00"/>
+              <stop offset="100%" stop-color="#FFB800"/>
+            </linearGradient>
+          </defs>
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle class="fg" id="scoreCircle" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="327"/>
+        </svg>
+        <div class="score-num" id="scoreNum">0<small>su 100</small></div>
+      </div>
+      <div class="score-reaction" id="scoreReaction"></div>
+      <div class="score-label" id="scoreLabel"></div>
+      <div class="score-tagline" id="scoreTagline"></div>
+      <p class="score-sub" id="scoreSub"></p>
+      <div class="score-percentile" id="scorePercentile"></div>
+      <div class="score-time" id="scoreTime"></div>
+    </div>
+
+    <!-- RADAR -->
+    <div class="radar-section">
+      <svg class="radar-svg" id="radarChart" viewBox="0 0 300 300" width="280" height="280"></svg>
+    </div>
+
+    <!-- DIMENSIONS -->
+    <div class="dim-grid" id="dimGrid"></div>
+
+    <!-- NEXT STEPS -->
+    <div class="next-steps" id="nextSteps">
+      <h3>I tuoi prossimi 3 passi</h3>
+      <div id="stepsContent"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="badges-section" id="badgesSection">
+      <h3>I tuoi badge</h3>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+
+    <!-- SPECIAL INSIGHTS & RED FLAGS -->
+    <div class="special-section" id="specialSection"></div>
+  </div>
+
+  <!-- SHARE -->
   <div class="share-section">
-    <h3>Condividi il tuo risultato</h3>
+    <h3>Fai vedere il tuo score</h3>
     <div class="share-btns">
-      <button class="share-btn primary" onclick="shareLinkedIn()">Condividi su LinkedIn</button>
-      <button class="share-btn" onclick="copyResult()">Copia risultato</button>
-      <button class="share-btn" onclick="restart()">Rifai il test</button>
+      <button class="share-btn primary" onclick="shareLinkedIn()">Posta su LinkedIn</button>
+      <button class="share-btn whatsapp" onclick="shareWhatsApp()">Manda su WhatsApp</button>
+      <button class="share-btn challenge" onclick="shareChallenge()">Sfida un collega</button>
+      <button class="share-btn" onclick="copyResult()">Copia per LinkedIn</button>
+      <button class="share-btn" onclick="restart()">Non ti convince? Rifallo.</button>
     </div>
   </div>
   <div class="credit">Creato da <a href="https://www.linkedin.com/in/lucadeangelis-/" target="_blank">Luca De Angelis</a> — GenAI Specialist</div>
 </section>
 
 <script>
+/* ===== QUESTIONS ===== */
 const questions = [
   {
-    dim: "strategy",
-    text: "La GenAI è parte della strategia aziendale?",
-    opts: [
-      { label: "A", text: "Non è mai stata discussa a livello direzionale", score: 0 },
-      { label: "B", text: "Se ne parla, ma senza un piano concreto", score: 1 },
-      { label: "C", text: "C'è una roadmap con owner e milestone definite", score: 2 },
-      { label: "D", text: "È integrata nel piano strategico con KPI e budget dedicato", score: 3 }
+    dim:"strategy",
+    text:"Se domani il vostro CEO dovesse presentare al board la strategia AI, cosa mostrerebbe?",
+    subtitle:"Questa è la domanda che separa chi parla di AI da chi la fa.",
+    opts:[
+      {label:"A",text:"Niente — l'AI non è mai stata agenda del board",score:0},
+      {label:"B",text:"Qualche slide con demo impressionanti, ma senza numeri reali",score:1},
+      {label:"C",text:"Una roadmap con use case prioritizzati, owner e timeline",score:3},
+      {label:"D",text:"Business case con ROI validato, budget pluriennale e OKR collegati",score:5}
     ]
   },
   {
-    dim: "knowledge",
-    text: "Com'è la vostra knowledge base?",
-    opts: [
-      { label: "A", text: "PDF sparsi, nessuna struttura — un caos documentale", score: 0 },
-      { label: "B", text: "Esiste un repository, ma non è pensato per l'AI", score: 1 },
-      { label: "C", text: "Strutturata e aggiornata, ma non ottimizzata per LLM", score: 2 },
-      { label: "D", text: "Progettata per essere consumata da agenti AI", score: 3 }
+    dim:"strategy",
+    text:"Chi ha il potere di dire 'sì' a un progetto AI da 200K nella vostra organizzazione?",
+    subtitle:"Il budget racconta la verità meglio di qualsiasi strategia.",
+    opts:[
+      {label:"A",text:"Nessuno — non esiste un processo decisionale per l'AI",score:0},
+      {label:"B",text:"Un middle manager entusiasta che deve mendicare budget ogni volta",score:1},
+      {label:"C",text:"Un VP o Director con budget dedicato e mandato chiaro",score:3},
+      {label:"D",text:"Un C-level con delega piena e un comitato AI cross-funzionale",score:5}
     ]
   },
   {
-    dim: "talent",
-    text: "Qual è il livello di competenze AI nel team?",
-    opts: [
-      { label: "A", text: "Nessuno ha competenze specifiche su AI/GenAI", score: 0 },
-      { label: "B", text: "Qualche early adopter usa ChatGPT, ma niente di strutturato", score: 1 },
-      { label: "C", text: "Team dedicato con competenze di prompt engineering e AI", score: 2 },
-      { label: "D", text: "Centro di eccellenza AI con skill cross-funzionali", score: 3 }
+    dim:"data",
+    text:"Un nuovo data scientist entra in azienda lunedì. Quanto tempo per accedere ai dati chiave?",
+    subtitle:"La risposta a questa domanda predice il successo del vostro prossimo progetto AI.",
+    opts:[
+      {label:"A",text:"Settimane — tra permessi, silos e formati incompatibili",score:0},
+      {label:"B",text:"Giorni — i dati esistono ma servono workaround creativi per accedervi",score:1},
+      {label:"C",text:"Ore — c'è un data catalog e un processo di onboarding strutturato",score:3},
+      {label:"D",text:"Minuti — infrastruttura self-service con dati catalogati, versionati e documentati",score:5}
     ]
   },
   {
-    dim: "governance",
-    text: "Come gestite la governance dell'AI?",
-    opts: [
-      { label: "A", text: "Non c'è nessuna policy — ognuno fa come vuole", score: 0 },
-      { label: "B", text: "Linee guida informali, niente di ufficiale", score: 1 },
-      { label: "C", text: "Policy approvata con ruoli e responsabilità definite", score: 2 },
-      { label: "D", text: "Framework completo: etica, compliance, audit, EU AI Act ready", score: 3 }
+    dim:"data",
+    text:"Se un modello AI desse una risposta sbagliata in produzione, riuscireste a risalire al dato sorgente?",
+    subtitle:"",
+    opts:[
+      {label:"A",text:"No — non sapremmo nemmeno da dove cominciare",score:0},
+      {label:"B",text:"Forse, con molto lavoro manuale e qualche collega esperto",score:1},
+      {label:"C",text:"Sì, abbiamo logging e lineage di base sui principali flussi",score:3},
+      {label:"D",text:"Assolutamente — data lineage end-to-end, observability e alerting automatico",score:5}
     ]
   },
   {
-    dim: "data",
-    text: "Quanto sono accessibili e puliti i vostri dati?",
-    opts: [
-      { label: "A", text: "Silos ovunque — ogni sistema parla una lingua diversa", score: 0 },
-      { label: "B", text: "Qualche integrazione, ma tanti buchi e duplicazioni", score: 1 },
-      { label: "C", text: "Data lake/warehouse funzionante con buona qualità", score: 2 },
-      { label: "D", text: "Dati unificati, real-time, pronti per alimentare modelli AI", score: 3 }
+    dim:"talent",
+    text:"Quante persone hanno usato un LLM per lavoro nell'ultimo mese — non per curiosità, per lavoro vero?",
+    subtitle:"Il 90% risponde B. Vediamo tu.",
+    opts:[
+      {label:"A",text:"Pochissime, e probabilmente di nascosto",score:0},
+      {label:"B",text:"Un gruppo di early adopter entusiasti, ma senza supporto formale",score:1},
+      {label:"C",text:"Il 30-50% — c'è un programma di adoption con tool approvati",score:3},
+      {label:"D",text:"La maggioranza — l'AI è integrata nei workflow quotidiani con training continuo",score:5}
     ]
   },
   {
-    dim: "strategy",
-    text: "Chi sponsorizza i progetti AI?",
-    opts: [
-      { label: "A", text: "Nessuno — sono iniziative bottom-up senza copertura", score: 0 },
-      { label: "B", text: "Un singolo entusiasta, senza potere decisionale reale", score: 1 },
-      { label: "C", text: "Un dirigente senior che protegge il budget", score: 2 },
-      { label: "D", text: "C-level con mandato chiaro e governance cross-funzionale", score: 3 }
+    dim:"talent",
+    text:"Cosa succede quando qualcuno propone un'idea AI nella vostra azienda?",
+    subtitle:"",
+    opts:[
+      {label:"A",text:"Viene ignorato o gli dicono 'non è prioritario ora'",score:0},
+      {label:"B",text:"Entusiasmo iniziale, poi si arena nei processi e nelle approvazioni",score:1},
+      {label:"C",text:"C'è un processo chiaro: idea → valutazione → prototipo in settimane",score:3},
+      {label:"D",text:"Ha accesso a sandbox, budget per POC e un percorso accelerato verso la produzione",score:5}
     ]
   },
   {
-    dim: "knowledge",
-    text: "Come misurate il successo dei progetti AI?",
-    opts: [
-      { label: "A", text: "Non misuriamo — lanciamo e speriamo", score: 0 },
-      { label: "B", text: "KPI generici tipo \"soddisfazione utente\"", score: 1 },
-      { label: "C", text: "Metriche specifiche: accuracy, resolution rate, CSAT", score: 2 },
-      { label: "D", text: "Framework Test & Learn con A/B test, iterazioni continue, LLM-as-Judge", score: 3 }
+    dim:"governance",
+    text:"Se uscisse un articolo: 'L'AI della vostra azienda ha dato info sbagliate a un cliente' — cosa succederebbe?",
+    subtitle:"Ecco dove si vede chi fa sul serio.",
+    opts:[
+      {label:"A",text:"Panico totale — non abbiamo né policy né piano di crisi",score:0},
+      {label:"B",text:"Improvviseremmo — ci sono linee guida vaghe ma niente di testato",score:1},
+      {label:"C",text:"Abbiamo un protocollo di incident response e un owner designato",score:3},
+      {label:"D",text:"Processo rodato: monitoraggio continuo, escalation automatica, playbook testato",score:5}
     ]
   },
   {
-    dim: "talent",
-    text: "Come collaborate tra IT, Business e Operations sull'AI?",
-    opts: [
-      { label: "A", text: "Non collaboriamo — IT decide tutto", score: 0 },
-      { label: "B", text: "Qualche riunione, ma ognuno tira per la sua strada", score: 1 },
-      { label: "C", text: "Team cross-funzionale con cadenza regolare", score: 2 },
-      { label: "D", text: "Squad agile dedicata con ownership condivisa su risultati", score: 3 }
+    dim:"governance",
+    text:"Quanto siete preparati per l'EU AI Act e i requisiti di trasparenza algoritmica?",
+    subtitle:"",
+    opts:[
+      {label:"A",text:"EU AI Act? Non sappiamo nemmeno cosa sia",score:0},
+      {label:"B",text:"Ne abbiamo sentito parlare, ma non abbiamo fatto nulla di concreto",score:1},
+      {label:"C",text:"Abbiamo mappato i rischi e iniziato l'assessment dei nostri sistemi AI",score:3},
+      {label:"D",text:"Classificazione rischio completata, documentazione tecnica in corso, DPO e legal allineati",score:5}
     ]
   },
   {
-    dim: "governance",
-    text: "Avete già qualcosa in produzione con GenAI?",
-    opts: [
-      { label: "A", text: "Zero — solo demo e proof of concept", score: 0 },
-      { label: "B", text: "Un pilota limitato, non ancora scalato", score: 1 },
-      { label: "C", text: "Soluzione in produzione su un caso d'uso specifico", score: 2 },
-      { label: "D", text: "Più soluzioni in produzione, con pipeline di scaling", score: 3 }
+    dim:"execution",
+    text:"Quanti dei vostri progetti AI degli ultimi 18 mesi sono arrivati in produzione con utenti reali?",
+    subtitle:"Questa domanda fa male. Ma è necessaria.",
+    opts:[
+      {label:"A",text:"Zero — siamo ancora nella fase delle demo eterne",score:0},
+      {label:"B",text:"Uno, forse, ma con scope molto ridotto rispetto al piano originale",score:1},
+      {label:"C",text:"2-3 in produzione, con metriche monitorate e iterazioni continue",score:3},
+      {label:"D",text:"Pipeline strutturata: più soluzioni live, A/B test sistematici, nuove release ogni sprint",score:5}
     ]
   },
   {
-    dim: "data",
-    text: "Qual è l'approccio al change management per l'AI?",
-    opts: [
-      { label: "A", text: "\"L'AI sostituirà tutti\" — panico e resistenza", score: 0 },
-      { label: "B", text: "Comunicazione generica, poca formazione concreta", score: 1 },
-      { label: "C", text: "Piano di upskilling con champion interni", score: 2 },
-      { label: "D", text: "Cultura AI-first: formazione continua, incentivi, community interna", score: 3 }
+    dim:"execution",
+    text:"Come misurate se un progetto AI sta funzionando davvero?",
+    subtitle:"L'ultima. E forse la più importante.",
+    opts:[
+      {label:"A",text:"Non misuriamo — se non si rompe, va bene",score:0},
+      {label:"B",text:"Feedback qualitativo e sensazioni — 'sembra che funzioni'",score:1},
+      {label:"C",text:"KPI definiti prima del lancio: accuracy, latency, adoption rate, cost per query",score:3},
+      {label:"D",text:"Dashboard real-time con metriche business + tecniche, LLM-as-Judge, cicli di miglioramento continuo",score:5}
     ]
   }
 ];
 
+/* ===== DIMENSIONS ===== */
+const dimensionWeights = {strategy:1.3,data:1.2,execution:1.1,talent:1.0,governance:0.9};
+
 const dimensions = {
-  strategy: { name: "Strategia & Leadership", insights: {
-    low: "La GenAI non è ancora sul radar del management. Senza sponsorship C-level, qualsiasi iniziativa resterà un esperimento.",
-    mid: "C'è interesse ma manca un piano strutturato. Il rischio: investire in POC che non scalano mai.",
-    high: "Leadership allineata e roadmap chiara. Siete nella posizione ideale per accelerare."
+  strategy:{name:"Strategy & Leadership",insights:{
+    low:"L'AI senza sponsor C-level è un hobby costoso. Ogni progetto AI che muore in azienda muore per lo stesso motivo: nessuno con potere reale ci ha messo la faccia.",
+    mid:"Avete uno sponsor, ma non ancora un sistema. Il passaggio critico: da 'progetto del capo entusiasta' a 'priorità strategica con budget protetto'.",
+    high:"Leadership allineata, budget dedicato, OKR collegati. Siete nella rara posizione in cui la strategia AI non è un PowerPoint — è un piano di esecuzione."
   }},
-  knowledge: { name: "Knowledge & Metriche", insights: {
-    low: "Il bot è intelligente quanto i dati che gli dai. Senza una KB strutturata e KPI chiari, navighi alla cieca.",
-    mid: "Le basi ci sono, ma manca l'ottimizzazione per l'AI. Focus su strutturare la conoscenza per gli LLM.",
-    high: "Conoscenza strutturata e metriche solide. La base per scalare con confidenza."
+  data:{name:"Data & Infrastructure",insights:{
+    low:"Il vostro modello AI più sofisticato sarà intelligente quanto il vostro Excel più disordinato. Prima di comprare tool AI, investite in data quality.",
+    mid:"I dati ci sono, ma arrivarci è un percorso a ostacoli. Ogni ora che un data scientist spende a pulire dati è un'ora di valore AI bruciata.",
+    high:"Dati accessibili, tracciabili e pronti per l'AI. Questo è il vero moat competitivo — più prezioso di qualsiasi modello."
   }},
-  talent: { name: "Competenze & Collaborazione", insights: {
-    low: "Senza competenze dedicate e collaborazione cross-funzionale, l'AI resterà un giocattolo dell'IT.",
-    mid: "Competenze presenti ma frammentate. Serve un modello operativo che unisca business, IT e operations.",
-    high: "Team strutturato e collaborazione matura. Il vero differenziale competitivo."
+  talent:{name:"Talent & Culture",insights:{
+    low:"L'AI non fallisce per la tecnologia — fallisce per le persone. Se il vostro team ha paura dell'AI o la ignora, nessun tool vi salverà.",
+    mid:"Avete gli early adopter, ora vi serve il 'middle majority'. La vera sfida: rendere l'AI normale, non speciale.",
+    high:"Cultura AI-native con competenze diffuse. Il vantaggio più difficile da copiare per i competitor: non si compra, si costruisce."
   }},
-  governance: { name: "Governance & Produzione", insights: {
-    low: "Nessuna governance e niente in produzione. Il gap tra demo e realtà è ancora enorme.",
-    mid: "Primi passi concreti, ma serve un framework per scalare in modo sicuro e conforme.",
-    high: "Governance solida e presenza in produzione. Siete tra il 5% che ha davvero deployato."
+  governance:{name:"Governance & Risk",insights:{
+    low:"Zero governance AI significa una cosa sola: una bomba a orologeria. Il primo incidente — e arriverà — vi troverà completamente impreparati.",
+    mid:"Le basi ci sono, ma il vero test arriverà con il primo incidente reale o con l'enforcement dell'EU AI Act. Siete pronti?",
+    high:"Governance strutturata e compliance proattiva. In un mondo dove la regolamentazione AI accelera, voi siete già in posizione."
   }},
-  data: { name: "Dati & Change Management", insights: {
-    low: "Dati frammentati e resistenza al cambiamento. I due killer silenziosi di ogni progetto AI.",
-    mid: "Infrastruttura dati discreta ma il change management è il collo di bottiglia. L'AI è un progetto di persone.",
-    high: "Dati pronti e cultura orientata all'AI. La combinazione più rara e più potente."
+  execution:{name:"Execution & Scale",insights:{
+    low:"Il 90% dei POC AI non arriva mai in produzione. Se non avete niente di live con utenti reali, tutto il resto è teoria.",
+    mid:"Avete qualcosa in produzione — siete già avanti. Ma 'in produzione' non basta: misurate, iterate, scalate.",
+    high:"Pipeline di delivery AI funzionante con metriche reali. Siete passati dal 'fare AI' al 'fare business con l'AI'."
   }}
 };
 
+/* ===== LEVELS / ARCHETYPES ===== */
 const levels = [
-  { max: 25, label: "Explorer", color: "#FF4D00", desc: "La tua organizzazione è nella fase di esplorazione. Non è un problema — il 70% delle aziende è qui. Ma il rischio è restare bloccati tra POC infiniti e promesse non mantenute. Serve un piano, non un altro esperimento." },
-  { max: 50, label: "Experimenter", color: "#FFB800", desc: "State sperimentando, ma in modo frammentato. I pezzi ci sono, manca il puzzle. Il prossimo passo: passare dalla logica dei \"progetti\" alla logica della \"trasformazione\"." },
-  { max: 75, label: "Builder", color: "#0FA", desc: "Siete tra i pochi che stanno costruendo davvero. Avete superato la fase demo. Ora la sfida è scalare senza perdere qualità e governance." },
-  { max: 100, label: "Leader", color: "#00C48C", desc: "Top 5%. La GenAI è parte del vostro DNA operativo. La sfida ora è mantenere il vantaggio e diventare un caso di riferimento nel vostro settore." }
+  {max:25,label:"The Dreamer",tagline:"Tanta visione, zero execution",reaction:"Ouch.",color:"#FF4D00",cssClass:"level-dreamer",
+    desc:"La tua organizzazione parla di AI ma non la fa. Il 70% delle aziende italiane è qui — non è una vergogna, ma è un rischio. Mentre voi discutete, i vostri competitor stanno deployando.",
+    steps:["Settimana 1: Identifica UN caso d'uso ad alto impatto e bassa complessità","Mese 1: Nomina un AI Champion con almeno il 30% del tempo dedicato e un budget per un POC","Mese 3: Porta il primo POC davanti al leadership team con metriche concrete di impatto"]},
+  {max:50,label:"The Tinkerer",tagline:"Esperimenti ovunque, risultati da nessuna parte",reaction:"Ci sei quasi. Ma 'quasi' in AI vuol dire 'non ancora'.",color:"#FFB800",cssClass:"level-tinkerer",
+    desc:"Avete il coraggio di sperimentare ma non la disciplina di scalare. Il vostro cimitero di POC cresce, i vostri business case no.",
+    steps:["Settimana 1: Audit di tutti i POC/esperimenti AI — quanti hanno un business owner? Quanti hanno KPI?","Mese 1: Uccidete il 50% dei progetti senza sponsor e raddoppiate le risorse su quelli con potenziale","Mese 3: Definite un processo 'POC-to-Prod' con gate di approvazione e criteri go/no-go"]},
+  {max:75,label:"The Operator",tagline:"Dalla demo alla realtà. Ora scalate.",reaction:"Non male. Anzi, davvero non male.",color:"#0FA",cssClass:"level-operator",
+    desc:"Siete nel 15% che ha superato la 'valley of death' tra prototipo e produzione. Avete qualcosa di reale, che funziona, con utenti veri.",
+    steps:["Settimana 1: Mappate i costi totali dei vostri sistemi AI in produzione — conoscete il cost-per-query?","Mese 1: Create un 'AI Platform Team' che centralizzi best practice e acceleri il deployment","Mese 3: Implementate un framework di LLMOps per monitoraggio continuo, versioning e rollback"]},
+  {max:100,label:"The Architect",tagline:"L'AI non è un progetto. È il sistema operativo.",reaction:"Wow.",color:"#00C48C",cssClass:"level-architect",
+    desc:"Top 5%. L'AI è integrata nel vostro modo di lavorare, decidere e competere. Non avete un 'team AI' — avete un'azienda AI-augmented.",
+    steps:["Settimana 1: Valutate se state creando vendor lock-in — la vostra architettura è model-agnostic?","Mese 1: Lanciate 'AI for AI' — usate l'AI per ottimizzare i vostri stessi sistemi AI","Mese 3: Diventate un caso di riferimento nel settore — attraete talento e influenzate il mercato"]}
 ];
 
-let current = 0;
-let answers = [];
+/* ===== SPECIAL INSIGHTS ===== */
+const specialInsights = [
+  {id:"strategy_no_data",name:"Il Visionario Senza Fondamenta",icon:"🏗️",
+    cond:ds=>ds.strategy>=70&&ds.data<=30,
+    msg:"Avete una leadership illuminata sull'AI ma i vostri dati sono un disastro. È come avere un pilota di Formula 1 con un'auto senza motore."},
+  {id:"talent_no_gov",name:"Il Far West Digitale",icon:"🤠",
+    cond:ds=>ds.talent>=70&&ds.governance<=30,
+    msg:"Il vostro team usa l'AI a pieno regime ma senza regole. Shadow AI ovunque. Un data breach è questione di 'quando', non di 'se'."},
+  {id:"all_talk",name:"Tutto Fumo, Niente Arrosto",icon:"💨",
+    cond:ds=>ds.strategy>=60&&ds.execution<=20,
+    msg:"La strategia c'è, i progetti no. Meno roadmap, più shipping."},
+  {id:"fast_reckless",name:"L'Incosciente Veloce",icon:"🏎️",
+    cond:ds=>ds.execution>=70&&ds.governance<=30,
+    msg:"State deployando AI senza governance. Con l'EU AI Act in arrivo, state accumulando debito regolamentare."},
+  {id:"data_no_talent",name:"Il Tesoro Inutilizzato",icon:"💎",
+    cond:ds=>ds.data>=70&&ds.talent<=30,
+    msg:"Dati eccellenti ma nessuno che sappia usarli con l'AI. Il vostro dataset è una miniera d'oro senza piccone."},
+  {id:"balanced",name:"L'Equilibrista",icon:"⚖️",
+    cond:ds=>{const v=Object.values(ds),a=v.reduce((x,y)=>x+y)/v.length;return v.every(x=>Math.abs(x-a)<15)&&a>=40},
+    msg:"Profilo raro: maturità equilibrata su tutte le dimensioni. Scegliete UNA dimensione e portatela all'eccellenza."}
+];
 
-function startQuiz() {
-  document.getElementById('hero').style.display = 'none';
-  document.getElementById('quiz').style.display = 'block';
+const redFlags = [
+  {id:"shadow_ai",title:"Shadow AI Alert",
+    cond:ans=>{const t=ans.filter(a=>a.dim==="talent"),g=ans.filter(a=>a.dim==="governance");
+    return t.reduce((s,a)=>s+a.score,0)/t.length>=3&&g.reduce((s,a)=>s+a.score,0)/g.length<=1},
+    msg:"Il vostro team usa strumenti AI senza policy aziendale. Dati sensibili potrebbero già essere finiti in prompt di ChatGPT. Azione immediata necessaria."},
+  {id:"ai_washing",title:"AI Washing Risk",
+    cond:ans=>{const s=ans.filter(a=>a.dim==="strategy"),o=ans.filter(a=>a.dim!=="strategy");
+    return s.reduce((x,a)=>x+a.score,0)/s.length>=3&&o.reduce((x,a)=>x+a.score,0)/o.length<=1},
+    msg:"Molta strategia, poca sostanza. La vostra comunicazione sull'AI potrebbe essere più avanti della realtà."},
+  {id:"vanity_ai",title:"Vanity AI",
+    cond:ans=>{const e=ans.filter(a=>a.dim==="execution");
+    return e.length>=2&&e[0].score>=3&&e[1].score<=1},
+    msg:"Avete progetti in produzione ma non misurate se funzionano. Senza metriche, non sapete se l'AI sta creando o bruciando valore."}
+];
+
+/* ===== BADGES ===== */
+const badgeDefs = [
+  {id:"visionary",name:"AI Visionary",icon:"💎",cond:(pct,ds)=>pct>=80},
+  {id:"datachamp",name:"Data Champion",icon:"📊",cond:(pct,ds)=>ds.data>=80},
+  {id:"strategist",name:"Strategy First",icon:"🧭",cond:(pct,ds)=>ds.strategy>=80},
+  {id:"executor",name:"Ship It",icon:"🚀",cond:(pct,ds)=>ds.execution>=80},
+  {id:"guardian",name:"AI Guardian",icon:"🛡️",cond:(pct,ds)=>ds.governance>=80},
+  {id:"reality",name:"Reality Check",icon:"🪞",cond:(pct,ds)=>pct<=25},
+  {id:"honest",name:"The Honest One",icon:"🏅",cond:(pct,ds)=>pct===0}
+];
+
+/* ===== PROGRESS MESSAGES ===== */
+const progressMsgs = {
+  4:"Stai andando forte. Continua così.",
+  6:"Sei a metà! Il bello viene ora.",
+  8:"Quasi fatto. Le ultime 2 contano più di quanto pensi.",
+  9:"Ultima curva.",
+  10:"Ultimo click. Il tuo score sta per essere calcolato..."
+};
+
+/* ===== STATE ===== */
+let current = 0, answers = [], comboCount = 0, quizStartTime = 0;
+
+/* ===== SOCIAL PROOF ===== */
+(function initProof(){
+  let c = parseInt(localStorage.getItem('airQuizCount')||'0');
+  if(!c) c = 2847;
+  document.getElementById('proofCount').textContent = c.toLocaleString('it-IT');
+})();
+
+/* ===== CHALLENGE CHECK ===== */
+(function checkChallenge(){
+  const p = new URLSearchParams(location.search);
+  if(p.has('challenge')){
+    window._challengeScore = parseInt(p.get('challenge'));
+  }
+})();
+
+/* ===== START ===== */
+function startQuiz(){
+  document.getElementById('hero').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  quizStartTime = Date.now();
+  // Build progress steps
+  const ps = document.getElementById('progressSteps');
+  ps.innerHTML = '';
+  for(let i=0;i<questions.length;i++){
+    const s = document.createElement('div');
+    s.className = 'progress-step';
+    s.id = 'pstep'+i;
+    ps.appendChild(s);
+  }
   showQuestion();
 }
 
-function showQuestion() {
+/* ===== SHOW QUESTION ===== */
+function showQuestion(){
   const q = questions[current];
   const area = document.getElementById('questionArea');
-  area.innerHTML = '';
-  area.className = 'fade-in';
+  area.className = 'q-entering';
 
-  const pct = ((current) / questions.length) * 100;
-  document.getElementById('progressBar').style.width = pct + '%';
+  // Update progress
+  for(let i=0;i<questions.length;i++){
+    const s = document.getElementById('pstep'+i);
+    s.className = 'progress-step' + (i<current?' completed':'') + (i===current?' active':'');
+  }
+
+  // Progress message
+  const msgEl = document.getElementById('progressMsg');
+  const msg = progressMsgs[current+1];
+  if(msg){msgEl.textContent=msg;msgEl.classList.add('visible')}
+  else{msgEl.classList.remove('visible')}
 
   area.innerHTML = `
-    <div class="q-counter">Domanda ${current + 1} di ${questions.length}</div>
+    <div class="q-counter">Domanda ${current+1} di ${questions.length}</div>
     <div class="q-text">${q.text}</div>
+    ${q.subtitle?`<div class="q-subtitle">${q.subtitle}</div>`:'<div class="q-subtitle"></div>'}
     <div class="options">
-      ${q.opts.map((o, i) => `
+      ${q.opts.map((o,i)=>`
         <button class="opt-btn" onclick="selectAnswer(${i})">
           <span class="opt-label">${o.label}</span>
           ${o.text}
@@ -301,97 +653,366 @@ function showQuestion() {
   `;
 }
 
-function selectAnswer(idx) {
+/* ===== SELECT ANSWER ===== */
+function selectAnswer(idx){
   const q = questions[current];
-  answers.push({ dim: q.dim, score: q.opts[idx].score });
+  const score = q.opts[idx].score;
+  answers.push({dim:q.dim,score:score});
+
+  // Haptic
+  if(navigator.vibrate) navigator.vibrate(10);
+
+  // Combo
+  if(score===5){
+    comboCount++;
+    if(comboCount>=2){
+      const flash = document.createElement('div');
+      flash.className='combo-flash';
+      flash.textContent = `Combo x${comboCount}!`;
+      document.body.appendChild(flash);
+      setTimeout(()=>flash.remove(),1000);
+    }
+  } else { comboCount=0; }
 
   const btns = document.querySelectorAll('.opt-btn');
   btns[idx].classList.add('selected');
 
-  setTimeout(() => {
-    current++;
-    if (current < questions.length) {
-      showQuestion();
-    } else {
-      showResults();
-    }
-  }, 350);
+  const area = document.getElementById('questionArea');
+  setTimeout(()=>{
+    area.classList.remove('q-entering');
+    area.classList.add('q-exiting');
+    setTimeout(()=>{
+      current++;
+      if(current<questions.length){
+        showQuestion();
+      } else {
+        showSuspense();
+      }
+    },300);
+  },400);
 }
 
-function showResults() {
-  document.getElementById('quiz').style.display = 'none';
-  document.getElementById('results').style.display = 'block';
+/* ===== SUSPENSE ===== */
+function showSuspense(){
+  document.getElementById('quiz').style.display='none';
+  const sus = document.getElementById('suspense');
+  sus.style.display='flex';
+  const steps = ['ss1','ss2','ss3','ss4','ss5'];
+  steps.forEach((id,i)=>{
+    setTimeout(()=>document.getElementById(id).classList.add('visible'),400*(i+1));
+  });
+  setTimeout(()=>{
+    sus.style.display='none';
+    showResults();
+  },400*steps.length+800);
+}
 
-  const maxScore = questions.length * 3;
-  const totalScore = answers.reduce((s, a) => s + a.score, 0);
-  const pct = Math.round((totalScore / maxScore) * 100);
+/* ===== SHOW RESULTS ===== */
+function showResults(){
+  document.getElementById('results').style.display='block';
 
-  // Animate score
+  // Weighted score
+  let wTotal=0, wMax=0;
+  for(const [dim,weight] of Object.entries(dimensionWeights)){
+    const da = answers.filter(a=>a.dim===dim);
+    const ds = da.reduce((s,a)=>s+a.score,0);
+    const dm = da.length*5;
+    wTotal += ds*weight;
+    wMax += dm*weight;
+  }
+  const pct = Math.round((wTotal/wMax)*100);
+
+  // Score count
+  let c = parseInt(localStorage.getItem('airQuizCount')||'2847');
+  c++;
+  localStorage.setItem('airQuizCount',String(c));
+
+  // Time
+  const elapsed = Math.round((Date.now()-quizStartTime)/1000);
+  const mins = Math.floor(elapsed/60);
+  const secs = elapsed%60;
+
+  // Challenge
+  if(window._challengeScore){
+    const cb = document.getElementById('challengeBanner');
+    cb.style.display='block';
+    document.getElementById('challengeScore').textContent = window._challengeScore+'/100';
+  }
+
+  // Animate score ring
   const circle = document.getElementById('scoreCircle');
-  const circumference = 327;
-  setTimeout(() => {
-    circle.style.strokeDashoffset = circumference - (circumference * pct / 100);
-  }, 200);
+  setTimeout(()=>{circle.style.strokeDashoffset=327-(327*pct/100)},200);
 
-  let displayed = 0;
-  const numEl = document.getElementById('scoreNum');
-  const interval = setInterval(() => {
-    displayed++;
-    numEl.textContent = displayed;
-    if (displayed >= pct) clearInterval(interval);
-  }, 20);
+  // Animate number
+  animateNumber(document.getElementById('scoreNum'),pct,2000);
 
   // Level
-  const level = levels.find(l => pct <= l.max) || levels[levels.length - 1];
-  document.getElementById('scoreLabel').textContent = `Livello: ${level.label}`;
+  const level = levels.find(l=>pct<=l.max)||levels[levels.length-1];
+  const res = document.getElementById('results');
+  res.className = 'results '+level.cssClass;
+
+  document.getElementById('scoreReaction').textContent = level.reaction;
+  document.getElementById('scoreReaction').style.color = level.color;
+  document.getElementById('scoreReaction').style.opacity = '1';
+  document.getElementById('scoreLabel').textContent = level.label;
   document.getElementById('scoreLabel').style.color = level.color;
+  document.getElementById('scoreTagline').textContent = level.tagline;
   document.getElementById('scoreSub').textContent = level.desc;
-  circle.style.stroke = level.color;
 
-  // Dimensions
+  // Percentile
+  let percentile;
+  if(pct<=15) percentile='nel top 90%';
+  else if(pct<=35) percentile='sopra il 30% dei professionisti';
+  else if(pct<=55) percentile='sopra il 55% dei professionisti';
+  else if(pct<=75) percentile='sopra il 73% dei professionisti';
+  else if(pct<=90) percentile='sopra l\'89% dei professionisti';
+  else percentile='nel top 5%';
+  document.getElementById('scorePercentile').textContent = `Il tuo score ti posiziona ${percentile}`;
+  document.getElementById('scoreTime').textContent = `Completato in ${mins}:${secs.toString().padStart(2,'0')}`;
+
+  // Dimension scores
   const dimScores = {};
-  for (const [key] of Object.entries(dimensions)) {
-    const dimAnswers = answers.filter(a => a.dim === key);
-    const dimTotal = dimAnswers.reduce((s, a) => s + a.score, 0);
-    const dimMax = dimAnswers.length * 3;
-    dimScores[key] = dimMax > 0 ? Math.round((dimTotal / dimMax) * 100) : 0;
+  for(const [key] of Object.entries(dimensions)){
+    const da = answers.filter(a=>a.dim===key);
+    const ds = da.reduce((s,a)=>s+a.score,0);
+    const dm = da.length*5;
+    dimScores[key] = dm>0?Math.round((ds/dm)*100):0;
   }
 
+  // Radar chart
+  drawRadar(dimScores);
+
+  // Dimension cards
   const grid = document.getElementById('dimGrid');
-  grid.innerHTML = '';
-  for (const [key, dim] of Object.entries(dimensions)) {
-    const val = dimScores[key];
-    const cat = val <= 33 ? 'low' : val <= 66 ? 'mid' : 'high';
-    grid.innerHTML += `
-      <div class="dim-card fade-in">
+  grid.innerHTML='';
+  for(const [key,dim] of Object.entries(dimensions)){
+    const val=dimScores[key];
+    const cat=val<=33?'low':val<=66?'mid':'high';
+    grid.innerHTML+=`
+      <div class="dim-card ${cat}">
+        <div class="dim-score">${val}%</div>
         <div class="dim-name">${dim.name}</div>
-        <div class="dim-bar-wrap"><div class="dim-bar ${cat}" style="width:${val}%"></div></div>
+        <div class="dim-bar-wrap"><div class="dim-bar ${cat}" style="width:0%"></div></div>
         <div class="dim-insight">${dim.insights[cat]}</div>
-      </div>
-    `;
+      </div>`;
+  }
+  // Animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-bar').forEach((bar,i)=>{
+      const keys=Object.keys(dimensions);
+      bar.style.width=dimScores[keys[i]]+'%';
+    });
+  },200);
+
+  // Next steps
+  const sc=document.getElementById('stepsContent');
+  sc.innerHTML='';
+  level.steps.forEach((s,i)=>{
+    sc.innerHTML+=`<div class="step-item"><div class="step-num">${['01','02','03'][i]}</div><div class="step-text">${s}</div></div>`;
+  });
+
+  // Badges
+  const bg=document.getElementById('badgesGrid');
+  bg.innerHTML='';
+  let hasAny=false;
+  badgeDefs.forEach(b=>{
+    const earned=b.cond(pct,dimScores);
+    if(earned) hasAny=true;
+    bg.innerHTML+=`<div class="badge ${earned?'earned':''}"><span class="badge-icon">${b.icon}</span>${b.name}</div>`;
+  });
+  if(!hasAny) document.getElementById('badgesSection').style.display='none';
+
+  // Special insights & red flags
+  const ss=document.getElementById('specialSection');
+  ss.innerHTML='';
+  specialInsights.forEach(si=>{
+    if(si.cond(dimScores)){
+      ss.innerHTML+=`<div class="special-card"><div class="special-title">${si.icon} ${si.name}</div><div class="special-msg">${si.msg}</div></div>`;
+    }
+  });
+  redFlags.forEach(rf=>{
+    if(rf.cond(answers)){
+      ss.innerHTML+=`<div class="special-card red-flag"><div class="special-title">⚠️ ${rf.title}</div><div class="special-msg">${rf.msg}</div></div>`;
+    }
+  });
+
+  // Confetti for high scores
+  if(pct>75) celebrateHighScore();
+
+  // Easter eggs
+  if(pct>=98){
+    document.getElementById('scoreSub').textContent="100/100. O sei un unicorno, o stai mentendo. In entrambi i casi, parliamone.";
+  }
+  if(pct===0){
+    document.getElementById('scoreSub').textContent="Almeno sei onesto. Ed è il primo passo. Il secondo è qui sotto.";
   }
 
-  window._resultText = `Ho appena fatto l'AI Readiness Assessment di Luca De Angelis.\n\n Il mio score: ${pct}/100 — Livello ${level.label}\n\n${Object.entries(dimensions).map(([k, d]) => `→ ${d.name}: ${dimScores[k]}%`).join('\n')}\n\nFai il test anche tu 👇\nhttps://lucadeang.github.io/ai-readiness/\n\n#GenAI #AITransformation #AIReadiness`;
+  // Store result for sharing
+  window._pct=pct;
+  window._level=level;
+  window._dimScores=dimScores;
+  buildShareTexts(pct,level,dimScores);
 }
 
-function shareLinkedIn() {
-  const text = encodeURIComponent(window._resultText);
-  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://lucadeang.github.io/ai-readiness/')}&text=${text}`, '_blank');
+/* ===== RADAR CHART ===== */
+function drawRadar(scores){
+  const svg=document.getElementById('radarChart');
+  const cx=150,cy=150,maxR=110;
+  const dims=Object.keys(dimensions);
+  const n=dims.length;
+  const angleStep=(2*Math.PI)/n;
+  const startAngle=-Math.PI/2;
+
+  let html='';
+  // Grid circles
+  [.25,.5,.75,1].forEach(f=>{
+    let pts=[];
+    for(let i=0;i<n;i++){
+      const a=startAngle+i*angleStep;
+      pts.push(`${cx+maxR*f*Math.cos(a)},${cy+maxR*f*Math.sin(a)}`);
+    }
+    html+=`<polygon points="${pts.join(' ')}" class="radar-grid"/>`;
+  });
+  // Grid lines
+  for(let i=0;i<n;i++){
+    const a=startAngle+i*angleStep;
+    html+=`<line x1="${cx}" y1="${cy}" x2="${cx+maxR*Math.cos(a)}" y2="${cy+maxR*Math.sin(a)}" class="radar-grid"/>`;
+  }
+  // Data shape
+  let dataPts=[],dotHtml='';
+  dims.forEach((d,i)=>{
+    const a=startAngle+i*angleStep;
+    const r=(scores[d]/100)*maxR;
+    const x=cx+r*Math.cos(a);
+    const y=cy+r*Math.sin(a);
+    dataPts.push(`${x},${y}`);
+    dotHtml+=`<circle cx="${x}" cy="${y}" class="radar-dot"/>`;
+  });
+  html+=`<polygon points="${dataPts.join(' ')}" class="radar-shape"/>`;
+  html+=dotHtml;
+  // Labels
+  const labelNames=[dimensions.strategy.name,dimensions.data.name,dimensions.talent.name,dimensions.governance.name,dimensions.execution.name];
+  dims.forEach((d,i)=>{
+    const a=startAngle+i*angleStep;
+    const lr=maxR+25;
+    const x=cx+lr*Math.cos(a);
+    const y=cy+lr*Math.sin(a);
+    html+=`<text x="${x}" y="${y}" class="radar-label">${labelNames[i]}</text>`;
+  });
+  svg.innerHTML=html;
 }
 
-function copyResult() {
-  navigator.clipboard.writeText(window._resultText).then(() => {
-    const btn = event.target;
-    btn.textContent = 'Copiato! ✓';
-    setTimeout(() => btn.textContent = 'Copia risultato', 2000);
+/* ===== ANIMATE NUMBER ===== */
+function animateNumber(el,target,duration){
+  const start=performance.now();
+  const easeOutExpo=t=>t===1?1:1-Math.pow(2,-10*t);
+  function update(now){
+    const elapsed=now-start;
+    const progress=Math.min(elapsed/duration,1);
+    const eased=easeOutExpo(progress);
+    el.innerHTML=Math.round(eased*target)+'<small>su 100</small>';
+    if(progress<1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+/* ===== CONFETTI ===== */
+function celebrateHighScore(){
+  const colors=['#FF4D00','#FFB800','#00C48C','#0FA','#6C63FF'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.left=Math.random()*100+'vw';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay=Math.random()*2+'s';
+    p.style.animationDuration=(2+Math.random()*2)+'s';
+    p.style.borderRadius=Math.random()>.5?'50%':'2px';
+    const sz=(4+Math.random()*8)+'px';
+    p.style.width=sz;p.style.height=sz;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),5000);
+  }
+}
+
+/* ===== SHARE TEXTS ===== */
+function buildShareTexts(pct,level,ds){
+  const baseUrl='https://lucadeang.github.io/dashboard-feedback-pa/';
+  const dims=Object.entries(dimensions).map(([k,d])=>`→ ${d.name}: ${ds[k]}%`).join('\n');
+
+  // LinkedIn text varies by level
+  let linkedInText;
+  if(pct<=25){
+    linkedInText=`Ho appena fatto l'AI Readiness Assessment.\n\nScore: ${pct}/100 — ${level.label}.\n\nOuch.\n\nMa almeno ora so DOVE siamo. E sapere è il primo passo per non buttare soldi nel prossimo "progetto AI innovativo" che muore dopo il POC.\n\n${dims}\n\n2 minuti. 10 domande. Zero filtri.\nTu che score hai?\n\n${baseUrl}\n\n#AIReadiness #GenAI #AITransformation`;
+  } else if(pct<=50){
+    linkedInText=`Ho appena scoperto il mio AI Readiness Score.\n\n${pct}/100 — ${level.label}.\n\nCi sei quasi. Ma "quasi" in AI vuol dire "non ancora".\n\n${dims}\n\nLa parte che mi ha fatto riflettere di più?\nLa domanda sulla governance.\n\nFai il test in 2 minuti:\n${baseUrl}\n\nPoi dimmi: che livello sei?\n\n#AIReadiness #GenAI #AITransformation #Leadership`;
+  } else if(pct<=75){
+    linkedInText=`AI Readiness Score: ${pct}/100.\n\nLivello: ${level.label}.\n\n${dims}\n\nIl gap tra le dimensioni? È esattamente il motivo per cui tanti progetti AI muoiono.\n\nTu dove sei messo? Test nel primo commento (2 minuti, 10 domande, 0 filtri).\n\n${baseUrl}\n\n#AIReadiness #GenAI #Governance #AITransformation`;
+  } else {
+    linkedInText=`AI Readiness Score: ${pct}/100 — ${level.label}.\n\nTop 5%.\n\nNon lo dico per vantarmi. Lo dico perché la differenza non è la tecnologia. È il change management. Le persone.\n\nSe il tuo score è sotto 50, non hai un problema di AI. Hai un problema di leadership.\n\nFai il test. Poi ne parliamo.\n\n${baseUrl}\n\n#AIReadiness #GenAI #Leadership #Transformation`;
+  }
+
+  window._linkedInText=linkedInText;
+  window._shortText=`Ho fatto l'AI Readiness Assessment. Score: ${pct}/100 — ${level.label}.\n\nFallo anche tu, ci vogliono 2 minuti: ${baseUrl}`;
+  window._baseUrl=baseUrl;
+  window._pctVal=pct;
+}
+
+/* ===== SHARING ===== */
+function shareLinkedIn(){
+  const text=encodeURIComponent(window._linkedInText);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window._baseUrl)}`, '_blank');
+}
+
+function shareWhatsApp(){
+  const text=encodeURIComponent(window._shortText);
+  window.open(`https://wa.me/?text=${text}`,'_blank');
+}
+
+function shareChallenge(){
+  const url=window._baseUrl+'?challenge='+window._pctVal;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=event.target;
+    btn.textContent='Link copiato! Mandalo →';
+    setTimeout(()=>btn.textContent='Sfida un collega',2500);
   });
 }
 
-function restart() {
-  current = 0;
-  answers = [];
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('hero').style.display = 'flex';
+function copyResult(){
+  navigator.clipboard.writeText(window._linkedInText).then(()=>{
+    const btn=event.target;
+    btn.textContent='Copiato! ✓';
+    setTimeout(()=>btn.textContent='Copia per LinkedIn',2000);
+  });
+}
+
+function restart(){
+  current=0;answers=[];comboCount=0;
+  document.getElementById('results').style.display='none';
+  document.getElementById('results').className='results';
+  document.getElementById('scoreCircle').style.strokeDashoffset='327';
+  document.getElementById('hero').style.display='flex';
+}
+
+/* ===== CUSTOM CURSOR ===== */
+if(window.matchMedia('(hover:hover)').matches){
+  const cursor=document.createElement('div');
+  cursor.className='custom-cursor';
+  const dot=document.createElement('div');
+  dot.className='cursor-dot';
+  document.body.append(cursor,dot);
+  document.addEventListener('mousemove',e=>{
+    cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';
+    dot.style.left=e.clientX+'px';dot.style.top=e.clientY+'px';
+  });
+  const addHover=()=>{
+    document.querySelectorAll('button,a,.opt-btn').forEach(el=>{
+      el.addEventListener('mouseenter',()=>cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave',()=>cursor.classList.remove('hovering'));
+    });
+  };
+  addHover();
+  const obs=new MutationObserver(addHover);
+  obs.observe(document.body,{childList:true,subtree:true});
 }
 </script>
 </body>
